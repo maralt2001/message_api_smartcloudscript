@@ -1,13 +1,17 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Node API to calculate date & time",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
     "build": "tsc -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maralt2001/message_api_smartcloudscript.git"
   },
   "keywords": [],
   "author": "",
