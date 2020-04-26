@@ -1,0 +1,6 @@
+
+### Get days this year
+GET  https://smartcloudscript.de/api/date/days-this-year
+
+### Get root
+GET https://smartcloudscript.de/ HTTP/1.1
