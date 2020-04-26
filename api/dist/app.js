@@ -4,26 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const response_1 = require("./classes/response");
 //Provide environment variables
 require('dotenv').config();
 //app setup
 const app = express_1.default();
 const port = process.env.PORT;
-app.get('/api/date/daysleft', (req, res, next) => {
-    const thisYear = new Date().getFullYear();
-    const today = new Date();
-    if (thisYear != undefined && today != undefined) {
-        let amountOfDays = daysBetween(new Date(thisYear, 0, 1), today);
-        res.status(200).json({ DaysLeft: amountOfDays });
+app.get('/', (req, res, next) => {
+    res.send("<h3>Date Calculator API @smartcloudscript.de/api/date</h3>");
+});
+app.get('/api/date/days-this-year', (req, res, next) => {
+    const responseDays = new response_1.DaysThisYear();
+    if (responseDays != undefined) {
+        res.status(200).json(responseDays);
     }
     else {
         // Bad Request
         res.status(400).json({ BadRequest: 'something went wrong' });
     }
 });
-function daysBetween(startDate, endDate) {
-    const oneDay = 1000 * 60 * 60 * 24; //in ms
-    const differenceMs = Math.abs(startDate - endDate); //in ms
-    return Math.round(differenceMs / oneDay);
-}
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));
