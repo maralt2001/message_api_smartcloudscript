@@ -4,12 +4,12 @@ let schedule = require('node-schedule');
 
 // job to delete items from blacklist gte 1 minute
 let j = schedule.scheduleJob('*/1 * * * *', function(){
-    let lengthBlock = RequestLimiter.blocklist.length 
+    let lengthBlock = RequestLimiter.blocklist.length
+    let blocklistTimer:number = parseInt(process.env.BLOCKLISTTIMER!);
     if(lengthBlock > 0) {
         RequestLimiter.blocklist.forEach((item,index) => {
-            if(secondsBetween(item.lastCall, new Date()) >= 60) {
+            if(secondsBetween(item.lastCall, new Date()) >= blocklistTimer) {
                 RequestLimiter.blocklist.splice(index,1);
-                console.log(RequestLimiter.blocklist.length)
             }
         });
     }
@@ -29,7 +29,6 @@ export abstract class RequestLimiter {
 
         // check condition is ip address in blocklist
         if(this.blocklist.find(r => r.remoteip == remoteAddress)) {
-            console.log(this.blocklist, this.requestlist)
             return true;
         }
 
@@ -48,14 +47,14 @@ export abstract class RequestLimiter {
                 // check condition is request in between 60s and counter lt 10
                 if(secondsBetween(lastCall,currentDate)< 60 && this.requestlist[index].count < 10) {
                     this.requestlist[index].count++;
-                    console.log(this.requestlist)
                     return false;
                 }
                 // we have spam more then 10 calls in one minute - add request ip to blacklist
                 else {
                     let blacklistItem = this.requestlist[index];
                     this.blocklist.push({remoteip: blacklistItem.remoteip, lastCall: blacklistItem.lastCall})
-                    this.requestlist = [];
+                    //this.requestlist = [];
+                    this.requestlist.splice(index,1);
                     return true;
                 }
             
