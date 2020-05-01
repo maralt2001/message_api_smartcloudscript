@@ -10,6 +10,7 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
         RequestLimiter.blocklist.forEach((item,index) => {
             if(secondsBetween(item.lastCall, new Date()) >= blocklistTimer) {
                 RequestLimiter.blocklist.splice(index,1);
+                
             }
         });
     }
@@ -40,7 +41,7 @@ export abstract class RequestLimiter {
             return false;
         }
         // check condition is the ip in request list
-        else if(this.requestlist.findIndex(r => r.remoteip == remoteAddress) != -1) {
+        if(this.requestlist.findIndex(r => r.remoteip == remoteAddress) != -1) {
             let index = this.requestlist.findIndex(r => r.remoteip == remoteAddress);
             let lastCall = this.requestlist[index].lastCall;
 

@@ -1,5 +1,6 @@
 
-import express, {Request, Response, NextFunction} from 'express'
+import express, {Request, Response, NextFunction, response} from 'express'
+var ip2loc = require("ip2location-nodejs");
 
 import {DaysThisYear} from './classes/response'
 import {RequestLimiter} from './classes/requestLimiter'
@@ -32,5 +33,18 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
     }
 
 });
+
+app.get('/api/location/' ,(req:Request, res:Response, next:NextFunction ) => {
+
+    ip2loc.IP2Location_init("./database/ip2location/ip2location.BIN");
+ 
+    let testip = [`${req.connection.remoteAddress}`];
+    testip.forEach((element,index) => {
+        let result = ip2loc.IP2Location_get_all(testip[index]);
+        res.status(200).json({country: result.country_short, region: result.region, timezone: result.timezone, domain: result.domain, zipcode: result.zipcode})
+    });
+    
+
+})
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));

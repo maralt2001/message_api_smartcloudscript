@@ -19,3 +19,4 @@ function daysBetween(startDate, endDate) {
 function calculateLeapyear(year) {
     return (year % 100 === 0) ? (year % 400 === 0) : (year % 4 === 0);
 }
+//# sourceMappingURL=response.js.map
