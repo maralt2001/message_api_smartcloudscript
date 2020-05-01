@@ -30,6 +30,7 @@ export abstract class RequestLimiter {
 
         // check condition is ip address in blocklist
         if(this.blocklist.find(r => r.remoteip == remoteAddress)) {
+            console.log('blocklist')
             return true;
         }
 
