@@ -22,6 +22,7 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
     
     const responseDays = new DaysThisYear();
     const limit = RequestLimiter.isRequestLimitReached(req);
+    console.log(limit);
 
     if(limit != true && responseDays != undefined) {
         res.status(200).json(responseDays);
@@ -34,17 +35,6 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
 
 });
 
-app.get('/api/location/' ,(req:Request, res:Response, next:NextFunction ) => {
 
-    ip2loc.IP2Location_init("./database/ip2location/ip2location.BIN");
- 
-    let testip = [`${req.connection.remoteAddress}`];
-    testip.forEach((element,index) => {
-        let result = ip2loc.IP2Location_get_all(testip[index]);
-        res.status(200).json({country: result.country_short, region: result.region, timezone: result.timezone, domain: result.domain, zipcode: result.zipcode})
-    });
-    
-
-})
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));
