@@ -22,7 +22,6 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
     
     const responseDays = new DaysThisYear();
     const limit = RequestLimiter.isRequestLimitReached(req);
-    console.log(limit);
 
     if(limit != true && responseDays != undefined) {
         res.status(200).json(responseDays);
