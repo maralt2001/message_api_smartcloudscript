@@ -27,15 +27,13 @@ export abstract class RequestLimiter {
     public static isRequestLimitReached(req:Request):Boolean {
         
         let remoteAddress:string = '';
+        let currentDate:Date = new Date();
         if(req.headers['x-forwarded-for'] != undefined) {
             remoteAddress = req.headers['x-forwarded-for'] as string
         } 
         else {
             remoteAddress = req.connection.remoteAddress!
         }
-        console.log(remoteAddress);
-        console.log(req.headers['x-forwarded-for'])
-        let currentDate:Date = new Date();
 
         // check condition is ip address in blocklist
         if(this.blocklist.find(r => r.remoteip == remoteAddress)) {
@@ -100,8 +98,15 @@ export abstract class RequestLimiter {
 
     private static setRequestToDaily(req:Request) {
 
-        let reqip = req.connection.remoteAddress;
+        let reqip = '';
         let currentDate = new Date();
+
+        if(req.headers['x-forwarded-for'] != undefined) {
+            reqip = req.headers['x-forwarded-for'] as string
+        } 
+        else {
+            reqip = req.connection.remoteAddress!
+        }
         
         if(req != undefined) {
 
