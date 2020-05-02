@@ -33,6 +33,8 @@ export abstract class RequestLimiter {
         else {
             remoteAddress = req.connection.remoteAddress!
         }
+        console.log(remoteAddress);
+        console.log(req.headers['x-forwarded-for'])
         let currentDate:Date = new Date();
 
         // check condition is ip address in blocklist
