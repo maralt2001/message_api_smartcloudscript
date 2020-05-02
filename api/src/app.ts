@@ -1,9 +1,9 @@
 
-import express, {Request, Response, NextFunction, response} from 'express'
-var ip2loc = require("ip2location-nodejs");
+import express, {Request, Response, NextFunction} from 'express'
 
 import {DaysThisYear} from './classes/response'
 import {RequestLimiter} from './classes/requestLimiter'
+
 
 
 //Provide environment variables
@@ -12,6 +12,7 @@ require('dotenv').config();
 //app setup
 const app = express();
 const port = process.env.PORT;
+const fetch = require('node-fetch');
 
 app.get('/', (req:Request,res:Response, next:NextFunction) => {
 
@@ -33,7 +34,6 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
     }
 
 });
-
 
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));
