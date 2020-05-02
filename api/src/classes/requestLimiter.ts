@@ -5,7 +5,9 @@ let schedule = require('node-schedule');
 // job to delete items from blacklist gte 1 minute
 let j = schedule.scheduleJob('*/1 * * * *', function(){
     let lengthBlock = RequestLimiter.blocklist.length
+    let dailyListLength = RequestLimiter.dailylist.length;
     let blocklistTimer:number = parseInt(process.env.BLOCKLISTTIMER!);
+
     if(lengthBlock > 0) {
         RequestLimiter.blocklist.forEach((item,index) => {
             if(secondsBetween(item.lastCall, new Date()) >= blocklistTimer) {
@@ -13,6 +15,13 @@ let j = schedule.scheduleJob('*/1 * * * *', function(){
                 
             }
         });
+    }
+    if(dailyListLength > 0) {
+        RequestLimiter.dailylist.forEach((item, index) => {
+            if(isSameDay(item.lastcall) != true) {
+                RequestLimiter.dailylist.splice(index,1)
+            }
+        })
     }
     
   });
@@ -26,18 +35,17 @@ export abstract class RequestLimiter {
 
     public static isRequestLimitReached(req:Request):Boolean {
         
-        let remoteAddress:string = '';
+
+        let remoteAddress:string = checkReqRemoteIP(req);
         let currentDate:Date = new Date();
-        if(req.headers['x-forwarded-for'] != undefined) {
-            remoteAddress = req.headers['x-forwarded-for'] as string
-        } 
-        else {
-            remoteAddress = req.connection.remoteAddress!
-        }
+        
 
         // check condition is ip address in blocklist
         if(this.blocklist.find(r => r.remoteip == remoteAddress)) {
-            console.log(this.blocklist)
+            return true;
+        }
+        // check condition is ip adress in dailylist und property count gte 1000
+        if(this.dailylist.findIndex(r => r.remoteip == remoteAddress && r.count >= 1000 ) != -1 ) {
             return true;
         }
 
@@ -47,19 +55,17 @@ export abstract class RequestLimiter {
             let item:IHttpRequestItem = {remoteip: remoteAddress , lastCall: currentDate, count: 1};
             this.requestlist.push(item);
             this.setRequestToDaily(req);
-            console.log('first entry')
             return false;
         }
         // check condition is the ip in request list
-        if(this.requestlist.findIndex(r => r.remoteip == remoteAddress) != -1) {
-            let index = this.requestlist.findIndex(r => r.remoteip == remoteAddress);
+        if(this.lookupIndex(remoteAddress) != -1) {
+            let index = this.lookupIndex(remoteAddress);
             let lastCall = this.requestlist[index].lastCall;
 
                 // check condition is request in between 60s and counter lt 10
                 if(secondsBetween(lastCall,currentDate)< 60 && this.requestlist[index].count < 10) {
                     this.requestlist[index].count++;
                     this.setRequestToDaily(req);
-                    console.log(this.dailylist)
                     return false;
                 }
                 // check condition is request gt 60s and counter lt 10
@@ -80,9 +86,8 @@ export abstract class RequestLimiter {
             
         }
         // check condition is not in requstlist push item to list
-        else if (this.requestlist.findIndex(r => r.remoteip == remoteAddress) == -1 && remoteAddress != undefined) {
+        else if (this.lookupIndex(remoteAddress) == -1 && remoteAddress != undefined) {
             let item:IHttpRequestItem = {remoteip: remoteAddress , lastCall: currentDate, count: 1};
-            console.log('first entry')
             this.requestlist.push(item);
             this.setRequestToDaily(req);
             return false;
@@ -98,15 +103,8 @@ export abstract class RequestLimiter {
 
     private static setRequestToDaily(req:Request) {
 
-        let reqip = '';
+        let reqip = checkReqRemoteIP(req);
         let currentDate = new Date();
-
-        if(req.headers['x-forwarded-for'] != undefined) {
-            reqip = req.headers['x-forwarded-for'] as string
-        } 
-        else {
-            reqip = req.connection.remoteAddress!
-        }
         
         if(req != undefined) {
 
@@ -128,7 +126,6 @@ export abstract class RequestLimiter {
                     this.dailylist[index].count == 1;
                     this.dailylist[index].lastcall = new Date()
                 }
-
                 
             }
             
@@ -137,6 +134,12 @@ export abstract class RequestLimiter {
             return;
         }
 
+    }
+
+    private static lookupIndex(remoteIP:string):number {
+
+        return this.requestlist.findIndex(r => r.remoteip == remoteIP)
+        
     }
 
 }
@@ -181,5 +184,17 @@ function isSameDay(startDate:Date):Boolean {
 
     let today = new Date();
     return today.getFullYear() == startDate.getFullYear() && today.getMonth() == startDate.getMonth() && today.getDate() == startDate.getDate();
+
+}
+
+function checkReqRemoteIP(req:Request):string {
+
+    
+    if(req.headers['x-forwarded-for'] != undefined) {
+        return req.headers['x-forwarded-for'] as string
+    } 
+    else {
+        return req.connection.remoteAddress!
+    }
 
 }
