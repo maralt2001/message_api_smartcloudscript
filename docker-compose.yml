@@ -1,0 +1,32 @@
+version: '3.4'
+#create docker volumes for mongodb
+volumes: 
+  mongodata:
+    name: "MongoData-WebDB"
+  mongoconfig:
+    name: "MongoConfig-WebDB"
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    container_name: mongo-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+        - 27017:27017
+    volumes: 
+       - mongodata:/data/db
+       - mongoconfig:/data/configdb
+  nodeapi:
+    image: node_api
+    container_name: node_api
+    build: 
+      context: ./api/
+      dockerfile: Dockerfile
+    ports: 
+      - 5000:5000
+     
+    depends_on:
+      - mongo
