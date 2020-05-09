@@ -7,10 +7,10 @@ volumes:
     name: "MongoConfig-WebDB"
 
 services:
-  mongo:
-    image: mongo:latest
+  backend_db:
+    image: mongo
     restart: always
-    container_name: mongo_db
+    container_name: backend_db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -19,14 +19,14 @@ services:
     volumes: 
        - mongodata:/data/db
        - mongoconfig:/data/configdb
-  nodeapi:
-    image: node_api
-    container_name: node_api
+  frontend_api:
+    image: frontend_api
+    container_name: frontend_api
     build: 
-      context: ./api/
+      context: ./frontend_api/
       dockerfile: Dockerfile
     ports: 
       - 5000:5000
      
     depends_on:
-      - mongo
+      - backend_db
