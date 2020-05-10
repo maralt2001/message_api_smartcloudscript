@@ -15,7 +15,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     ports:
-        - 27018:27017
+        - 27017:27017
     volumes: 
        - mongodata:/data/db
        - mongoconfig:/data/configdb
@@ -30,3 +30,5 @@ services:
      
     depends_on:
       - backend_db
+    
+  
