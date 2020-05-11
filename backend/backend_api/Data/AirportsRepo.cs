@@ -10,10 +10,11 @@ namespace backend_api.Data
     public class AirportsRepo : IAirportsRepo
     {
         private static List<Airport> airports = new List<Airport>();
+        public static bool isProduction = false;
 
         public AirportsRepo()
         {
-            SetAirports();
+            InitAirports();
         }
         public Airport getAirport(int id)
         {
@@ -28,11 +29,19 @@ namespace backend_api.Data
 
         }
 
-        private static void SetAirports()
+        private static void InitAirports()
         {
-            var path = Path.GetFullPath(@".\Data\Static\Airports Germany.CSV");
+            var path = string.Empty;
+
+            if(!isProduction) {
+                path = Path.GetFullPath(@".\Data\Static\AirportsGermany.CSV");
+            }
+            else
+            {
+                path = "/data/staticfiles/AirportsGermany.CSV";
+            }
             
-            var index = 1;
+            int index = 1;
             using (var rd = new StreamReader(path))
             {
                 while (!rd.EndOfStream)

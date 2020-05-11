@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using backend_api.Data;
 using backend_api.Model;
-
+using Microsoft.AspNetCore.Hosting;
+using System;
 
 namespace backend_api.Controllers
 {
@@ -13,6 +14,7 @@ namespace backend_api.Controllers
         public AirportController(IAirportsRepo repo)
         {
             _repo = repo;
+            
         }
 
         [HttpGet]
@@ -29,6 +31,7 @@ namespace backend_api.Controllers
         {
             var airports = _repo.getAirports();
             return Ok(airports);
+            
         }
     }
 }

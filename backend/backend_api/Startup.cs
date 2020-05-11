@@ -33,6 +33,24 @@ namespace backend_api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            switch (env.IsDevelopment())
+            {
+                case true:
+                    
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"The Application is running in Development mode");
+                    AirportsRepo.isProduction = false;
+                  
+                    break;
+
+                case false:
+                    
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"The Application is running in Production mode");
+                    AirportsRepo.isProduction = true;
+                    
+                    break;
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

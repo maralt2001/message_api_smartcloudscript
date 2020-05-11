@@ -35,5 +35,35 @@ app.get('/api/date/days-this-year', (req:Request,res:Response, next:NextFunction
 
 });
 
+app.get('/api/airports', async (req:Request, res:Response, next:NextFunction) => {
+
+    try {
+        const result = await fetch('http://backend_api/api/airports');
+        const body = await result.json();
+        res.status(200).json(body);
+        
+    } catch (error) {
+        res.status(400).json({BadRequest: 'something went wrong'});
+    }
+    
+})
+
+app.get('/api/airport/:id', async (req:Request, res:Response, next:NextFunction) => {
+
+    try {
+
+        const id = req.params.id;
+        const result = await fetch(`http://backend_api/api/airport/${id}`);
+        const body = await result.json();
+        res.status(200).json(body);
+        
+    } catch (error) {
+        
+        res.status(400).json({BadRequest: 'something went wrong'})
+    }
+    
+
+})
+
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));

@@ -1,13 +1,18 @@
-version: '3.4'
+version: '3.7'
+x-defaults:
+  service: &logging-svc
+    logging: {options: {max-size: "10m", max-file: "3"}}
 #create docker volumes for mongodb
 volumes: 
   mongodata:
     name: "MongoData-WebDB"
   mongoconfig:
     name: "MongoConfig-WebDB"
+  
 
 services:
   backend_db:
+    <<: *logging-svc
     image: mongo
     restart: always
     container_name: backend_db
@@ -20,6 +25,7 @@ services:
        - mongodata:/data/db
        - mongoconfig:/data/configdb
   frontend_api:
+    <<: *logging-svc
     image: frontend_api
     container_name: frontend_api
     build: 
@@ -27,8 +33,17 @@ services:
       dockerfile: Dockerfile
     ports: 
       - 5000:5000
-     
     depends_on:
       - backend_db
+  backend_api:
+    <<: *logging-svc
+    image: backend_api
+    container_name: backend_api
+    build: 
+      context: ./backend/backend_api
+      dockerfile: Dockerfile
+    volumes: 
+      - ./backend/backend_api/Data/Static:/data/staticfiles
     
-  
+    
+    
