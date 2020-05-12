@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using backend_api.Model;
 
 namespace backend_api.Data
@@ -22,6 +23,13 @@ namespace backend_api.Data
             return airports.Find(i => i.Id == id);
         }
 
+        public Airport getAirportByIcao(string ic)
+        {
+            string icao = ic.ToUpper().Trim();
+            return airports.Find(f => f.Icao == icao);
+            
+        }
+
         public IEnumerable getAirports()
         {
             
@@ -29,29 +37,38 @@ namespace backend_api.Data
 
         }
 
-        private static void InitAirports()
+        private static async void InitAirports()
         {
             var path = string.Empty;
 
-            if(!isProduction) {
-                path = Path.GetFullPath(@".\Data\Static\AirportsGermany.CSV");
-            }
-            else
+            switch (isProduction)
             {
-                path = "/data/staticfiles/AirportsGermany.CSV";
+                case true:
+                    path= "/data/staticfiles/AirportsGermany.CSV";
+                    break;
+                //need in development and single container
+                case false:
+                    path= Path.GetFullPath(@".\Data\Static\AirportsGermany.CSV");
+                    break;
             }
+           
             
-            int index = 1;
-            using (var rd = new StreamReader(path))
+            var result = Task.Run(() =>
             {
-                while (!rd.EndOfStream)
+                int index = 1;
+                using (var rd = new StreamReader(path))
                 {
-                    var splits = rd.ReadLine().Split(';');
-                    var airport = new Airport{Id=index, Country=splits[0], City=splits[1], Icao=splits[2]};
-                    index++;
-                    airports.Add(airport);
+                    while (!rd.EndOfStream)
+                    {
+                        var splits = rd.ReadLine().Split(';');
+                        var airport = new Airport{Id=index, Country=splits[0], City=splits[1], Icao=splits[2]};
+                        index++;
+                        airports.Add(airport);
+                    }
                 }
-            }
+            });
+            await result;
+            
         }
 
     }

@@ -33,5 +33,22 @@ namespace backend_api.Controllers
             return Ok(airports);
             
         }
+
+        [HttpGet]
+        [Route("/api/airport")]
+
+        public IActionResult GetAirportByIcao([FromQuery]string icao)
+        {
+            
+            if(icao != string.Empty)
+            {
+                var airport = _repo.getAirportByIcao(icao);
+                return Ok(airport);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }
