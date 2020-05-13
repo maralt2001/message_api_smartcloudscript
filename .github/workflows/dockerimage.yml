@@ -14,7 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the Docker image Frontend API
+    - name: Change working directory
     - working-directory: frontend
+    - name: Create Docker image
       run: 
         docker build . --file Dockerfile -t frontend_api
