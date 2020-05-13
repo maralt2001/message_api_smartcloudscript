@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image Frontend API
-      run: docker build . --file ./frontend/Dockerfile --tag frontend_api:$(date +%s)
+      run: docker build . --file ../frontend/Dockerfile --tag frontend_api:$(date +%s)
