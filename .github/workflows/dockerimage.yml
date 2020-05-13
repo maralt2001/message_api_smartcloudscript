@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: frontend_api Docker Image CI
 
 on:
   push:
