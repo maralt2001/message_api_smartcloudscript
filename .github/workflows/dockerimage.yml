@@ -1,21 +1,16 @@
 name: Docker Image CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
 jobs:
-
-  build:
-
+  create_image_job:
     runs-on: ubuntu-latest
-
+    name: job
     steps:
-    - uses: actions/checkout@v2
-    - name: Change working directory
-    - working-directory: frontend
-    - name: Create Docker image
-      run: 
-        docker build . --file Dockerfile -t frontend_api
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: action step
+        uses: ./frontend
+      - name: create docker image
+        run: docker build -t frontend_api .
