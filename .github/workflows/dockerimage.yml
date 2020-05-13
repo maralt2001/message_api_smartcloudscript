@@ -12,10 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      working-directory: ./frontend/
-      run: docker build . --file Dockerfile --tag frontend_api:$(date +%s)
+   
     - uses: Pipeflow/Dokcerflow@0.0.1
     - name: Build 2
       with:
