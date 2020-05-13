@@ -1,8 +1,0 @@
-
-# action.yml
-name: 'docker action'
-description: 'docker action create docker'
-
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
