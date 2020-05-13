@@ -9,7 +9,7 @@ RUN npm install
 
 COPY ./frontend/ .
 RUN npm run build
-COPY ./frontend/.env ./
+COPY ./frontend/*.env ./
 
 EXPOSE 5000
 
