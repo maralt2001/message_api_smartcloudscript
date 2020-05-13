@@ -16,8 +16,8 @@ jobs:
     - name: Build the Docker image
       working-directory: ./frontend/
       run: docker build . --file Dockerfile --tag frontend_api:$(date +%s)
-    - name: Build 2  
     - uses: Pipeflow/Dokcerflow@0.0.1
+    - name: Build 2
       with:
         action: docker build . --file Dockerfile --tag frontend_api:$(date +%s)
         workdir: ./frontend/  
