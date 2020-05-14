@@ -12,7 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+<<<<<<< HEAD
 
+=======
+>>>>>>> d9280e005891e26becf08f06865868430233dde0
     - uses: actions/checkout@v2
     - name: Push to Docker Hub
       uses: elgohr/Publish-Docker-Github-Action@2.14
