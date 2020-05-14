@@ -22,7 +22,7 @@ jobs:
         username: ${{secrets.DOCKER_USER}}
         password: ${{secrets.DOCKER_PASSWORD}}
         workdir: ./frontend/
-        dockerfile: DOCKERFILE
+        dockerfile: Dockerfile
         tags: "latest"
       
   
