@@ -17,6 +17,7 @@ jobs:
       working-directory: ./frontend/
       run: docker build . --file Dockerfile --tag scs_frontend_api:$(date +%s)
     
+    - uses: actions/checkout@v2
     - name: Push to Docker Hub
       uses: elgohr/Publish-Docker-Github-Action@2.14
       with:
