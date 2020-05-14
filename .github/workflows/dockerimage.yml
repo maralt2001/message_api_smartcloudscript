@@ -21,6 +21,6 @@ jobs:
         password: ${{secrets.DOCKER_PASSWORD}}
         workdir: ./frontend/
         dockerfile: Dockerfile
-        tags: "latest,$(date+%s)"
+        tags: "latest,${{date+%s}}"
       
   
