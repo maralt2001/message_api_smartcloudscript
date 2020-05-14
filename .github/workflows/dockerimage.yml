@@ -18,10 +18,13 @@ jobs:
       run: docker build . --file Dockerfile --tag scs_frontend_api:$(date +%s)
     
     - name: Push to Docker Hub
-      uses: zenato/docker-action@v1.0.0
+      uses: elgohr/Publish-Docker-Github-Action@2.14
       with:
+        name: markusadocker/scs-nodejs-frontend-api
         username: ${{secrets.DOCKER_USER}}
         password: ${{secrets.DOCKER_PASSWORD}}
-        repository: scs-nodejs-frontend-api
+        dockerfile: DOCKERFILE
+        workdir: ./frontend/
+        tags: "latest"
       
   
