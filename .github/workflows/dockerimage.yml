@@ -16,4 +16,12 @@ jobs:
     - name: Build the Docker image
       working-directory: ./frontend/
       run: docker build . --file Dockerfile --tag scs_frontend_api:$(date +%s)
+    
+    - name: Push to Docker Hub
+      uses: zenato/docker-action@v1.0.0
+      with:
+        username: ${{DOCKER_USER}}
+        password: ${{DOCKER_PASSWORD}}
+        repository: scs-nodejs-frontend-api
+      
   
