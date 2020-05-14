@@ -12,10 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build the Docker image
-      working-directory: ./frontend/
-      run: docker build . --file Dockerfile --tag scs_frontend_api:$(date +%s)
+    
     
     - uses: actions/checkout@v2
     - name: Push to Docker Hub
@@ -24,7 +21,7 @@ jobs:
         name: markusadocker/scs-nodejs-frontend-api
         username: ${{secrets.DOCKER_USER}}
         password: ${{secrets.DOCKER_PASSWORD}}
-        context: /frontend/
+        context: ./frontend/
         workdir: ./frontend/
         dockerfile: DOCKERFILE
         tags: "latest"
