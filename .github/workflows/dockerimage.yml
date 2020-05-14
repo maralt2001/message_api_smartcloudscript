@@ -24,7 +24,7 @@ jobs:
         name: markusadocker/scs-nodejs-frontend-api
         username: ${{secrets.DOCKER_USER}}
         password: ${{secrets.DOCKER_PASSWORD}}
-        context: ./frontend/
+        context: frontend
         workdir: ./frontend/
         dockerfile: DOCKERFILE
         tags: "latest"
