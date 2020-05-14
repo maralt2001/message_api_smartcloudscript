@@ -4,3 +4,5 @@ backend/backend_api/bin
 backend/backend_api/obj
 
 
+
+.github/workflows/dockerimage.yml
