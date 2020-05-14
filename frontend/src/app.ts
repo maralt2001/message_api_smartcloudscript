@@ -14,6 +14,9 @@ const app = express();
 const port = process.env.PORT;
 const fetch = require('node-fetch');
 
+
+const apiAirports = process.env.APIAIRPORTS as string;
+
 app.get('/', (req:Request,res:Response, next:NextFunction) => {
 
     res.send("<h3>Date Calculator API @smartcloudscript.de/api/date</h3>")
