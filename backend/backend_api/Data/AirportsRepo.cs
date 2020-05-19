@@ -3,8 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using backend_api.Model;
+using Geolocation;
 
 namespace backend_api.Data
 {
@@ -44,11 +46,11 @@ namespace backend_api.Data
             switch (isProduction)
             {
                 case true:
-                    path= "/data/staticfiles/AirportsGermany.CSV";
+                    path= "/data/staticfiles/airportworld.csv";
                     break;
                 //need in development and single container
                 case false:
-                    path= Path.GetFullPath(@".\Data\Static\AirportsGermany.CSV");
+                    path= Path.GetFullPath(@".\Data\Static\airportworld.csv");
                     break;
             }
            
@@ -61,15 +63,29 @@ namespace backend_api.Data
                     while (!rd.EndOfStream)
                     {
                         var splits = rd.ReadLine().Split(';');
-                        var airport = new Airport{Id=index, Country=splits[0], City=splits[1], Icao=splits[2]};
+                        var airport = new Airport {
+                        Id = index,
+                        Icao = splits[0],
+                        Type = splits[1],
+                        Name = splits[2],
+                        Coordinate = new Coordinate {Latitude = Convert.ToDouble(splits[3]), Longitude = Convert.ToDouble(splits[4])},
+                        Continent = splits[5],
+                        Country = splits[6],
+                        Region = splits[7],
+                        Info = splits[8],
+                        Iata = splits[9]
+                        };
                         index++;
                         airports.Add(airport);
                     }
+                    
                 }
             });
             await result;
             
         }
+
+       
 
     }
 }

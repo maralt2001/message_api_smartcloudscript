@@ -2,6 +2,7 @@ frontend/node_modules
 .vscode
 backend/backend_api/bin
 backend/backend_api/obj
+frontend-page
 
 
 
