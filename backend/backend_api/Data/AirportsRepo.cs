@@ -17,29 +17,31 @@ namespace backend_api.Data
 
         public AirportsRepo()
         {
-            InitAirports();
+            InitAirportsFromCSV();
         }
+        
         public Airport getAirport(int id)
         {
 
-            return airports.Find(i => i.Id == id);
+            return airports.Find(f => f.Id == id);
         }
 
         public Airport getAirportByIcao(string ic)
         {
+            
             string icao = ic.ToUpper().Trim();
             return airports.Find(f => f.Icao == icao);
             
         }
 
-        public IEnumerable getAirports()
+        public List<Airport> getAirports()
         {
             
-            return airports;
+            return airports;            
 
         }
 
-        private static async void InitAirports()
+        public static async void InitAirportsFromCSV()
         {
             var path = string.Empty;
 
@@ -54,32 +56,30 @@ namespace backend_api.Data
                     break;
             }
            
-            
-            var result = Task.Run(() =>
+            int index = 1;
+            var result = Task.Run(() => 
             {
-                int index = 1;
                 using (var rd = new StreamReader(path))
+                while (!rd.EndOfStream)
                 {
-                    while (!rd.EndOfStream)
-                    {
-                        var splits = rd.ReadLine().Split(';');
-                        var airport = new Airport {
-                        Id = index,
-                        Icao = splits[0],
-                        Type = splits[1],
-                        Name = splits[2],
-                        Coordinate = new Coordinate {Latitude = Convert.ToDouble(splits[3]), Longitude = Convert.ToDouble(splits[4])},
-                        Continent = splits[5],
-                        Country = splits[6],
-                        Region = splits[7],
-                        Info = splits[8],
-                        Iata = splits[9]
-                        };
-                        index++;
-                        airports.Add(airport);
-                    }
+                    var splits = rd.ReadLine().Split(';');
+                    var airport = new Airport {
+                    Id = index,
+                    Icao = splits[0],
+                    Type = splits[1],
+                    Name = splits[2],
+                    Coordinate = new Coordinate {Latitude = Convert.ToDouble(splits[3]), Longitude = Convert.ToDouble(splits[4])},
+                    Continent = splits[5],
+                    Country = splits[6],
+                    Region = splits[7],
+                    Info = splits[8],
+                    Iata = splits[9]
+                    };
+                    index++;
+                    airports.Add(airport);
                     
                 }
+            
             });
             await result;
             

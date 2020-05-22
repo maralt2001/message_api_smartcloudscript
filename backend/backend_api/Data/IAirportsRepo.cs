@@ -1,6 +1,7 @@
 
 using System.Collections;
 using backend_api.Model;
+using System.Collections.Generic;
 
 namespace backend_api.Data
 {
@@ -10,7 +11,7 @@ namespace backend_api.Data
 
         Airport getAirportByIcao(string icao);
         
-        IEnumerable getAirports();
+        List<Airport> getAirports();
       
     }
 }

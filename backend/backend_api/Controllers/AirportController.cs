@@ -4,16 +4,20 @@ using backend_api.Data;
 using backend_api.Model;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using backend_api.Database;
+using System.Threading.Tasks;
 
 namespace backend_api.Controllers
 {
     public class AirportController : ControllerBase
     {
         private readonly IAirportsRepo _repo;
+        private readonly IDBContext _db;
         
-        public AirportController(IAirportsRepo repo)
+        public AirportController(IAirportsRepo repo, IDBContext db)
         {
             _repo = repo;
+            _db = db;
             
         }
 
@@ -50,5 +54,7 @@ namespace backend_api.Controllers
                 return NotFound();
             }
         }
+
+        
     }
 }

@@ -15,4 +15,7 @@ GET http://localhost:5000/api/date/days-this-year
 GET http://localhost:5000/api/airports HTTP/1.1
 
 ### Get Airport by id
-GET http://localhost:5000/api/airport/489
+GET http://localhost:5000/api/airport/3001
+
+### Get World Airports
+GET http://localhost:5000/api/airport?icao=eddl HTTP/1.1

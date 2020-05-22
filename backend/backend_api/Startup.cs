@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using backend_api.Data;
+using backend_api.Database;
 
 namespace backend_api
 {
@@ -28,6 +29,11 @@ namespace backend_api
         {
             services.AddControllers();
             services.AddSingleton<IAirportsRepo,AirportsRepo>();
+            services.AddSingleton<IDBContext>(sp => new MongoWithCredential(
+                Configuration.GetSection("DBConnection").GetSection("DB").Value,
+                Configuration.GetSection("DBConnection").GetSection("Path").Value,
+                "web",
+                "db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

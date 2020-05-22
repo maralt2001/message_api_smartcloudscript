@@ -80,5 +80,20 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
     }
 })
 
+app.get('/api/admin/dbstatus', async (req:Request, res:Response, next:NextFunction) => {
+
+    const result = await fetch('http://backend_api/api/admin/dbstatus');
+    const body = await result.json();
+    res.status(200).json(body);
+});
+
+app.get('/api/admin/db/bulkinsert', async(req:Request, res:Response, next:NextFunction) => {
+
+    const query = req.query
+    const result = await fetch(`http://backend_api/api/admin/job/bulkinsert?filename=${query.filename}`);
+    const body = await result.json();
+    res.status(200).json(body);
+})
+
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));
