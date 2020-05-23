@@ -59,6 +59,8 @@ namespace backend_api.Data
             int index = 1;
             var result = Task.Run(() => 
             {
+                
+
                 using (var rd = new StreamReader(path))
                 while (!rd.EndOfStream)
                 {
@@ -68,7 +70,7 @@ namespace backend_api.Data
                     Icao = splits[0],
                     Type = splits[1],
                     Name = splits[2],
-                    Coordinate = new Coordinate {Latitude = Convert.ToDouble(splits[3]), Longitude = Convert.ToDouble(splits[4])},
+                    GeoPosition = new GeoPosition(splits[3],splits[4]),
                     Continent = splits[5],
                     Country = splits[6],
                     Region = splits[7],
@@ -77,10 +79,10 @@ namespace backend_api.Data
                     };
                     index++;
                     airports.Add(airport);
-                    
                 }
             
             });
+            
             await result;
             
         }

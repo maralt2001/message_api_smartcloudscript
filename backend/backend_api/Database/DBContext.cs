@@ -36,6 +36,13 @@ namespace backend_api.Database
 
         }
 
+        public async Task<T> LoadRecordAsync<T>(string collectionName, string fieldKey, string fieldValue)
+        {
+            IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq(fieldKey, fieldValue);
+            return await collection.FindAsync(filter).Result.FirstOrDefaultAsync().ConfigureAwait(false);
+        }
+
         public async Task<bool> UpdateRecordAsync<T>(string collectionName, string id, T record)
         {
             BsonDocument bson = await BsonFactory.GetSetDocumentAsync(record);
@@ -59,9 +66,9 @@ namespace backend_api.Database
         {
             try
             {
-
+                
                 IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", id);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
                 return await collection.FindAsync(filter).Result.FirstOrDefaultAsync().ConfigureAwait(false);
 
             }
@@ -151,6 +158,7 @@ namespace backend_api.Database
         public MongoWithCredential(string databaseName, string databaseUrl, string user, string password)
         {
             MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
+            var url = new MongoUrl("mongodb://localhost:27017");
             MongoClientSettings settings = new MongoClientSettings
             {
                 Credential = credential,

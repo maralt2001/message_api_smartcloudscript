@@ -63,7 +63,7 @@ namespace backend_api.Controllers
                         Icao = splits[0],
                         Type = splits[1],
                         Name = splits[2],
-                        Coordinate = new Coordinate {Latitude = Convert.ToDouble(splits[3]), Longitude = Convert.ToDouble(splits[4])},
+                        GeoPosition = new GeoPosition(splits[3],splits[4]),
                         Continent = splits[5],
                         Country = splits[6],
                         Region = splits[7],

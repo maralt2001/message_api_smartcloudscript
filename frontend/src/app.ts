@@ -72,7 +72,9 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 
     try {
         const query = req.query
-        const result = await fetch(`http://backend_api/api/airport?icao=${query.icao}`);
+        var key = Object.keys(query).toString();
+        var value = Object.values(query).toString();
+        const result = await fetch(`http://backend_api/api/airport?${key}=${value}`);
         const body = await result.json();
         res.status(200).json(body)
     } catch (error) {

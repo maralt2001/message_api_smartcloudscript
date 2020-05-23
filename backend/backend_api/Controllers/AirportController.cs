@@ -41,12 +41,12 @@ namespace backend_api.Controllers
         [HttpGet]
         [Route("/api/airport")]
 
-        public IActionResult GetAirportByIcao([FromQuery]string icao)
+        public async Task<IActionResult> GetAirportQuery([FromQuery(Name="icao")]string fieldValue)
         {
             
-            if(icao != string.Empty)
+            if(fieldValue != string.Empty)
             {
-                var airport = _repo.getAirportByIcao(icao);
+                var airport = await _db.LoadRecordAsync<Airport>("airports","icao",fieldValue);
                 return Ok(airport);
             }
             else
