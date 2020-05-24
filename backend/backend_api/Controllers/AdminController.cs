@@ -1,20 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
-using backend_api.Data;
 using backend_api.Model;
-using Microsoft.AspNetCore.Hosting;
-using System;
 using backend_api.Database;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
-using Geolocation;
+using System;
 
 namespace backend_api.Controllers
 {
     public class AdminController: ControllerBase
     {
         private readonly IDBContext _db;
-        public static bool isProduction = true;
+        public static bool isProduction = false;
 
         public AdminController(IDBContext db)
         {
@@ -38,6 +35,7 @@ namespace backend_api.Controllers
         {
             List<Airport> airports = new List<Airport>();
             var path = string.Empty;
+            
             switch (isProduction)
             {
                 case true:
@@ -78,11 +76,11 @@ namespace backend_api.Controllers
                 });
                 await result;
                 var x = await _db.BulkInsert<Airport>(airports,"airports");
-                return Ok(new {state = x});
+                return Ok(new {insertCount = x});
             }
             else
             {
-                return Ok(new {state = "file not found"});
+                return BadRequest(new {state = "file not found"});
             }
             
 

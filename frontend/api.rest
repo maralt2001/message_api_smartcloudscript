@@ -5,8 +5,9 @@ GET  https://smartcloudscript.de/api/date/days-this-year
 ### Get root
 GET https://smartcloudscript.de/ HTTP/1.1
 
-### Get Airport by id from smartcloud...
-GET https://smartcloudscript.de/api/airports
+### Get Airport by icao code from smartcloud...
+GET https://smartcloudscript.de/api/airport?icao=LGAV
+
 
 ### Get in dev
 GET http://localhost:5000/api/date/days-this-year

@@ -151,14 +151,11 @@ namespace backend_api.Database
         
     }
 
-    
-
     public class MongoWithCredential : DBContext
     {
         public MongoWithCredential(string databaseName, string databaseUrl, string user, string password)
         {
             MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
-            var url = new MongoUrl("mongodb://localhost:27017");
             MongoClientSettings settings = new MongoClientSettings
             {
                 Credential = credential,
@@ -170,5 +167,16 @@ namespace backend_api.Database
             
         }
         
+    }
+
+    public class MongoLocalDB : DBContext
+    {
+        public MongoLocalDB(string databaseName)
+        {
+           
+            MongoUrl url = new MongoUrl("mongodb://localhost:27017");
+            MongoClient = new MongoClient(url);
+            Database = MongoClient.GetDatabase(databaseName);
+        }
     }
 }
