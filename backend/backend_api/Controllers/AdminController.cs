@@ -52,31 +52,32 @@ namespace backend_api.Controllers
                 int index = 1;
                 var result = Task.Run(() => 
                 {
-                    using (var rd = new StreamReader(path))
+                    using var rd = new StreamReader(path);
                     while (!rd.EndOfStream)
                     {
-                        var splits = rd.ReadLine().Split(';');
-                        var airport = new Airport {
-                        Id = index,
-                        Icao = splits[0],
-                        Type = splits[1],
-                        Name = splits[2],
-                        GeoPosition = new GeoPosition(splits[3],splits[4]),
-                        Continent = splits[5],
-                        Country = splits[6],
-                        Region = splits[7],
-                        Info = splits[8],
-                        Iata = splits[9]
+                        string[] splits = rd.ReadLine().Split(';');
+                        Airport airport = new Airport
+                        {
+                            Id = index,
+                            Icao = splits[0],
+                            Type = splits[1],
+                            Name = splits[2],
+                            GeoPosition = new GeoPosition(splits[3], splits[4]),
+                            Continent = splits[5],
+                            Country = splits[6],
+                            Region = splits[7],
+                            Info = splits[8],
+                            Iata = splits[9]
                         };
                         index++;
                         airports.Add(airport);
-                        
+
                     }
-                
+
                 });
                 await result;
-                var x = await _db.BulkInsert<Airport>(airports,"airports");
-                return Ok(new {insertCount = x});
+                int dbinsert = await _db.BulkInsert<Airport>(airports,"airports");
+                return Ok(new {insertCount = dbinsert});
             }
             else
             {
@@ -86,6 +87,23 @@ namespace backend_api.Controllers
 
 
             
+        }
+
+        [HttpGet]
+        [Route("/api/admin/job/airports/createindex")]
+        public async Task<IActionResult> CreateAirportIndex([FromQuery(Name ="key")]string key)
+        {
+            var result = await _db.CreateIndex<Airport>("airports", key);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("/api/admin/job/airports/dropindex")]
+
+        public async Task<IActionResult> DropAirportIndex([FromQuery(Name = "index")] string indexname)
+        {
+            var result = await _db.DropIndex<Airport>("airports", indexname);
+            return Ok(new { state = result });
         }
 
     }

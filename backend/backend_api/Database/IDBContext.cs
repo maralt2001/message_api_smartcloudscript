@@ -1,8 +1,5 @@
 using MongoDB.Driver;
-using MongoDB.Bson;
 using System.Threading.Tasks;
-using System;
-using backend_api.Database.Helpers;
 using System.Collections.Generic;
 
 namespace backend_api.Database
@@ -20,6 +17,8 @@ namespace backend_api.Database
         Task<bool> DeleteRecordAsync<T>(string collectionName, string id);
         Task<bool> IsConnectionUp (int secondToWait = 1);
         Task<int> BulkInsert<T> (List<T> data, string collectionName);
+        Task<string> CreateIndex<T>(string collectionName, string indexKey);
+        Task<bool> DropIndex<T>(string collectionName, string indexKey);
     }
 
         

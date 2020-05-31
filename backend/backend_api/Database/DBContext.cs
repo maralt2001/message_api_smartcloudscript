@@ -6,6 +6,8 @@ using backend_api.Database.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using backend_api.Model;
+using System.Runtime.InteropServices;
+using MongoDB.Bson.IO;
 
 namespace backend_api.Database
 {
@@ -146,6 +148,33 @@ namespace backend_api.Database
             }
            
            
+        }
+
+        public async Task<string> CreateIndex<T>(string collectionName, string indexKey)
+        {
+            var collection = Database.GetCollection<T>(collectionName);
+            IndexKeysDefinition<T> keys = new BsonDocument { {indexKey,1 } };
+            CreateIndexOptions options = new CreateIndexOptions { Name = indexKey, Unique = true };
+
+            var indexModel = new CreateIndexModel<T>(keys,options);
+            var result = await collection.Indexes.CreateOneAsync(indexModel);
+            return result;
+        }
+
+        public async Task<bool> DropIndex<T>(string collectionName, string indexName)
+        {
+            var collection = Database.GetCollection<T>(collectionName);
+
+            try
+            {
+                await collection.Indexes.DropOneAsync(indexName);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         
