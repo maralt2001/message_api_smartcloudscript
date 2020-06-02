@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using backend_api.Controllers;
 using static backend_api.Extensions.MongoServiceExtension;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using backend_api.Model;
 
 namespace backend_api
 {
@@ -29,6 +31,11 @@ namespace backend_api
         {
             services.AddControllers();
             services.AddMongoClient(Configuration, CurrentEnvironment);
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+
+                options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt").Result;
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +69,7 @@ namespace backend_api
             app.UseRouting();
 
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {

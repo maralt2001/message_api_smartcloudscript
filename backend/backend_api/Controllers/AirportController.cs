@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace backend_api.Controllers
 {
+    [ApiController]
     public class AirportController : ControllerBase
     {
         private readonly IDBContext _db;

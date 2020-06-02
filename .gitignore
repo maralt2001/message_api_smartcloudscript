@@ -3,6 +3,8 @@ frontend/node_modules
 backend/backend_api/bin
 backend/backend_api/obj
 frontend-page
+backend/vault/file
+backend/vault/logs
 
 
 

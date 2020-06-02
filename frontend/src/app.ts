@@ -97,5 +97,25 @@ app.get('/api/admin/db/bulkinsert', async(req:Request, res:Response, next:NextFu
     res.status(200).json(body);
 })
 
+app.get('/api/admin/db/createindex', async(req:Request, res:Response, next:NextFunction) => {
+    const query = req.query
+    var key = Object.keys(query).toString();
+    var value = Object.values(query).toString();
+    const result = await fetch(`http://backend_api/api/admin/job/airports/createindex?${key}=${value}`)
+    const body = await result.json();
+    res.status(201).json(body);
+})
+
+app.get('/api/admin/db/dropindex', async(req:Request, res:Response, next:NextFunction) => {
+    const query = req.query
+    var key = Object.keys(query).toString();
+    var value = Object.values(query).toString();
+    const result = await fetch(`http://backend_api/api/admin/job/airports/dropindex?${key}=${value}`)
+    const body = await result.json();
+    res.status(201).json(body);
+})
+
+
+
 
 app.listen(port, () => console.log(`Server ist started on port ${port} ...`));

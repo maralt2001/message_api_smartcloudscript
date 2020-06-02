@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace backend_api.Controllers
 {
+    [ApiController]
     public class AdminController: ControllerBase
     {
         private readonly IDBContext _db;
@@ -21,6 +24,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/dbstatus")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDBStatus()
         {
            var result = await _db.IsConnectionUp();
@@ -31,6 +35,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/job/bulkinsert")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> InsertMany([FromQuery] string filename)
         {
             List<Airport> airports = new List<Airport>();
@@ -91,14 +96,16 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/job/airports/createindex")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CreateAirportIndex([FromQuery(Name ="key")]string key)
         {
             var result = await _db.CreateIndex<Airport>("airports", key);
-            return Ok(result);
+            return Ok(new {state = result});
         }
 
         [HttpGet]
         [Route("/api/admin/job/airports/dropindex")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> DropAirportIndex([FromQuery(Name = "index")] string indexname)
         {

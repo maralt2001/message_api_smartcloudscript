@@ -41,4 +41,19 @@ services:
       dockerfile: Dockerfile
     volumes: 
       - ./backend/backend_api/Data/Static:/data/staticfiles
+  vault:
+    <<: *logging-svc
+    image: vault
+    container_name: vault
+    restart: always
+    environment: 
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_KEY=${VAULT_KEY_INIT}
+    volumes:
+      - ./backend/vault/logs:/vault/logs
+      - ./backend/vault/file:/vault/file
+      - ./backend/vault/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config=/vault/config/config.json
     
