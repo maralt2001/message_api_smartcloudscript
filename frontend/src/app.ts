@@ -3,6 +3,8 @@ import express, {Request, Response, NextFunction} from 'express'
 
 import {DaysThisYear} from './classes/response'
 import {RequestLimiter} from './classes/requestLimiter'
+import {ILoginBackendAdmin, IRegisterBackendAdmin} from './classes/requestAdmin'
+
 
 
 
@@ -11,8 +13,17 @@ require('dotenv').config();
 
 //app setup
 const app = express();
+const bodyParser = require('body-parser');
+const router = express.Router();
 const port = process.env.PORT;
 const fetch = require('node-fetch');
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+app.use(bodyParser.json());
+
+
 
 
 const apiAirports = process.env.APIAIRPORTS as string;
@@ -114,6 +125,33 @@ app.get('/api/admin/db/dropindex', async(req:Request, res:Response, next:NextFun
     const body = await result.json();
     res.status(201).json(body);
 })
+
+app.post('/api/admin/backend/login', async(req:Request, res:Response, next:NextFunction) => {
+
+    const body:ILoginBackendAdmin = req.body
+    var result = await fetch('http://backend_api/api/admin/backend/login', {
+        method: "post",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" }
+    });
+    const response = await result.json();
+    res.status(200).json(response);
+});
+
+
+app.post('/api/admin/backend/register', async(req:Request, res:Response, next:NextFunction) => {
+
+    const body:IRegisterBackendAdmin = req.body;
+    var result = await fetch('http://backend_api/api/admin/backend/register', {
+        method: "post",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" }
+    });
+    const response = await result.json();
+    res.status(200).json(response);
+
+});
+
 
 
 

@@ -27,7 +27,7 @@ namespace backend_api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/admin/login")]
+        [Route("/api/admin/backend/login")]
 
         public async Task<IActionResult> LoginBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
@@ -56,7 +56,7 @@ namespace backend_api.Controllers
         }
 
         [HttpPost]
-        [Route("/api/admin/register")]
+        [Route("/api/admin/backend/register")]
         [Produces("application/json")]
 
         public async Task<IActionResult> RegisterBackendAdmin([FromBody] BackendAdmin backendAdmin)

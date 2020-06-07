@@ -1,5 +1,6 @@
 frontend/node_modules
 .vscode
+startdev.sh
 backend/backend_api/bin
 backend/backend_api/obj
 frontend-page
