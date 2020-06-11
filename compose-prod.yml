@@ -8,7 +8,13 @@ volumes:
     name: "MongoData-WebDB"
   mongoconfig:
     name: "MongoConfig-WebDB"
-  
+networks: 
+  Prod_Net:
+    driver: bridge 
+    ipam:
+      driver: default 
+      config: 
+      - subnet: 172.28.0.0/16 
 
 services:
   backend_db:
@@ -21,6 +27,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     ports:
         - 27017:27017
+    networks: 
+      Prod_Net:
+        ipv4_address: 172.28.0.4
     volumes: 
        - mongodata:/data/db
        - mongoconfig:/data/configdb
@@ -30,6 +39,9 @@ services:
     container_name: frontend_api
     ports: 
       - 5000:5000
+    networks: 
+      Prod_Net:
+        ipv4_address: 172.28.0.5
     depends_on:
       - backend_db
   backend_api:
@@ -41,6 +53,9 @@ services:
       dockerfile: Dockerfile
     volumes: 
       - ./backend/backend_api/Data/Static:/data/staticfiles
+    networks: 
+      Prod_Net:
+        ipv4_address: 172.28.0.3
   vault:
     <<: *logging-svc
     image: vault
@@ -52,7 +67,9 @@ services:
       - ./backend/vault/logs:/vault/logs
       - ./backend/vault/file:/vault/file
       - ./backend/vault/config:/vault/config
-      
+    networks: 
+      Prod_Net:
+        ipv4_address: 172.28.0.2
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -config=/vault/config/config.json
