@@ -161,7 +161,7 @@ app.get('/api/admin/backend/vault/pathinfo', async(req:Request, res:Response, ne
 
 app.get('/api/admin/backend/vault/ui', async(req:Request, res:Response, next:NextFunction) => {
 
-    res.redirect(301,'http://vault:8200/ui')
+    res.redirect(301,'http://172.28.0.2:8200/ui')
     
     
         
