@@ -52,6 +52,7 @@ services:
       - ./backend/vault/logs:/vault/logs
       - ./backend/vault/file:/vault/file
       - ./backend/vault/config:/vault/config
+      
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -config=/vault/config/config.json
