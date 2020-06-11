@@ -159,6 +159,20 @@ app.get('/api/admin/backend/vault/pathinfo', async(req:Request, res:Response, ne
     res.status(200).json(body);
 })
 
+app.get('/api/admin/backend/vault/ui', async(req:Request, res:Response, next:NextFunction) => {
+
+    const query = req.query
+    var key = Object.keys(query).toString();
+    var value = Object.values(query).toString();
+
+    if(key != '' && value != '' ) {
+        res.redirect('http://vault:8200/ui', 301)
+    }
+    else {
+        res.status(400).json({BadRequest: 'something went wrong'})
+    }
+})
+
 
 
 
