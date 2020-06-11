@@ -48,7 +48,6 @@ services:
     restart: always
     environment: 
       - VAULT_ADDR=http://127.0.0.1:8200
-      - VAULT_KEY=${VAULT_KEY_INIT}
     volumes:
       - ./backend/vault/logs:/vault/logs
       - ./backend/vault/file:/vault/file

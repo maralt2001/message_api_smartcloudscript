@@ -6,6 +6,7 @@ backend/backend_api/obj
 frontend-page
 backend/vault/file
 backend/vault/logs
+backend/vault/data/key.txt
 
 
 

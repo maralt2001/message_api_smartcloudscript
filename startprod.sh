@@ -1,7 +1,11 @@
 #! /bin/bash
 
-read -p "Enter vault key for dev: " vaultprodkey
+docker-compose -f compose-prod.yml up -d
 
-export VAULT_DEV=$vaultprodkey
+read -p "Enter vault unseal key1: " vaultunseal1
+read -p "Enter vault unseal key2: " vaultunseal2
+read -p "Enter vault unseal key2: " vaultunseal3
 
-docker-compose -f docker-solution.yml up -d
+docker exec -it vault bin/sh -c "vault operator unseal $vaultunseal1"
+docker exec -it vault bin/sh -c "vault operator unseal $vaultunseal2"
+docker exec -it vault bin/sh -c "vault operator unseal $vaultunseal3"

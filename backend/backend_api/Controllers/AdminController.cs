@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using backend_api.Vault;
+using System.Linq;
 
 namespace backend_api.Controllers
 {
@@ -14,11 +16,13 @@ namespace backend_api.Controllers
     public class AdminController: ControllerBase
     {
         private readonly IDBContext _db;
+        private readonly IVaultContext _vault;
         public static bool isProduction = false;
 
-        public AdminController(IDBContext db)
+        public AdminController(IDBContext db, IVaultContext vault)
         {
             _db = db;
+            _vault = vault;
             
         }
 
@@ -30,6 +34,22 @@ namespace backend_api.Controllers
            var result = await _db.IsConnectionUp();
            return result ? Ok(new {state = "connection ist up"}) : Ok(new {state = "connection is down"});
 
+           
+        }
+
+        [HttpGet]
+        [Route("/api/admin/vault/pathinfo")]
+        public async Task<IActionResult> GetVaultSecretList()
+        {
+            var result = await _vault.GetPathInfo("secret","db/");
+            if(result.Keys.Count() != 0)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(new { state = "path not found" });
+            }
            
         }
 

@@ -152,6 +152,13 @@ app.post('/api/admin/backend/register', async(req:Request, res:Response, next:Ne
 
 });
 
+app.get('/api/admin/backend/vault/pathinfo', async(req:Request, res:Response, next:NextFunction) => {
+
+    const result = await fetch('http://backend_api/api/admin/vault/pathinfo');
+    const body = await result.json();
+    res.status(200).json(body);
+})
+
 
 
 
