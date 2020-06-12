@@ -67,6 +67,8 @@ services:
       - ./backend/vault/logs:/vault/logs
       - ./backend/vault/file:/vault/file
       - ./backend/vault/config:/vault/config
+    ports:
+      - 8200:8200
     networks: 
       Prod_Net:
         ipv4_address: 172.28.0.2
