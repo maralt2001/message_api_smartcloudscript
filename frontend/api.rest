@@ -4,7 +4,11 @@
 GET  https://smartcloudscript.de/api/date/days-this-year
 
 ### Get root
-GET https://smartcloudscript.de/ HTTP/1.1
+GET https://smartcloudscript.de/vault/ HTTP/1.1
+
+### Get vault
+
+GET  https://smartcloudscript.de/vault/ HTTP/1.1
 
 ### Get Airport by icao code from smartcloud...
 GET https://smartcloudscript.de/api/airport?icao=LGAV
