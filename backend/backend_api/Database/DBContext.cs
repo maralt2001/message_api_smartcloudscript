@@ -8,10 +8,12 @@ using System.Linq;
 using backend_api.Model;
 using System.Runtime.InteropServices;
 using MongoDB.Bson.IO;
+using backend_api.Vault;
+using backend_api.Vault.Models;
 
 namespace backend_api.Database
 {
-    public abstract class DBContext: IDBContext
+    public abstract class DBContext : IDBContext
     {
         public MongoClient MongoClient { get; set; }
         public IMongoDatabase Database { get; set; }
@@ -68,7 +70,7 @@ namespace backend_api.Database
         {
             try
             {
-                
+
                 IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
                 FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
                 return await collection.FindAsync(filter).Result.FirstOrDefaultAsync().ConfigureAwait(false);
@@ -104,7 +106,7 @@ namespace backend_api.Database
             }
         }
 
-        public async Task<bool> IsConnectionUp (int secondToWait = 1)
+        public async Task<bool> IsConnectionUp(int secondToWait = 1)
         {
 
             if (secondToWait <= 0)
@@ -113,50 +115,50 @@ namespace backend_api.Database
             }
             else
             {
-                Task<bool> result = Task.Run(() => 
-                    { 
+                Task<bool> result = Task.Run(() =>
+                    {
                         return Database.RunCommandAsync((Command<BsonDocument>)"{ping:1}").Wait(secondToWait * 1000);
                     });
 
                 return await result.ConfigureAwait(false);
-               
+
             }
         }
 
-        public async Task<int> BulkInsert<T> (List<T> data, string collectionName)
+        public async Task<int> BulkInsert<T>(List<T> data, string collectionName)
         {
-           
+
             var bulkOps = new List<WriteModel<T>>();
-            
-            if(data.Count > 0)
+
+            if (data.Count > 0)
             {
-                
+
                 foreach (var chunk in data)
                 {
                     var upsertOne = new InsertOneModel<T>(chunk);
-                    bulkOps.Add(upsertOne);    
-                    
+                    bulkOps.Add(upsertOne);
+
                 }
                 IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
-           
-                var writeresult =  await collection.BulkWriteAsync(bulkOps);
+
+                var writeresult = await collection.BulkWriteAsync(bulkOps);
                 return Convert.ToInt32(writeresult.InsertedCount);
             }
             else
             {
                 return 0;
             }
-           
-           
+
+
         }
 
         public async Task<string> CreateIndex<T>(string collectionName, string indexKey)
         {
             var collection = Database.GetCollection<T>(collectionName);
-            IndexKeysDefinition<T> keys = new BsonDocument { {indexKey,1 } };
+            IndexKeysDefinition<T> keys = new BsonDocument { { indexKey, 1 } };
             CreateIndexOptions options = new CreateIndexOptions { Name = indexKey, Unique = true };
 
-            var indexModel = new CreateIndexModel<T>(keys,options);
+            var indexModel = new CreateIndexModel<T>(keys, options);
             var result = await collection.Indexes.CreateOneAsync(indexModel);
             return result;
         }
@@ -177,13 +179,14 @@ namespace backend_api.Database
 
         }
 
-        
+
     }
 
     public class MongoWithCredential : DBContext
     {
         public MongoWithCredential(string databaseName, string databaseUrl, string user, string password)
         {
+
             MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
             MongoClientSettings settings = new MongoClientSettings
             {
@@ -192,11 +195,32 @@ namespace backend_api.Database
             };
             MongoClient = new MongoClient(settings);
             Database = MongoClient.GetDatabase(databaseName);
-            
-            
+
+
+        }
+
+    }
+
+   public class MongoWithCredentialVault : DBContext
+    {
+        public static string user = "";
+        public static string password = "";
+        public MongoWithCredentialVault(string databaseName, string databaseUrl)
+        {
+
+
+            MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
+            MongoClientSettings settings = new MongoClientSettings
+            {
+                Credential = credential,
+                Server = new MongoServerAddress(databaseUrl)
+            };
+            MongoClient = new MongoClient(settings);
+            Database = MongoClient.GetDatabase(databaseName);
         }
         
     }
+    
 
     public class MongoLocalDB : DBContext
     {

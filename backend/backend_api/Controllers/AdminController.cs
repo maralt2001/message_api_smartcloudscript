@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using backend_api.Vault;
 using System.Linq;
+using backend_api.Vault.Models;
 
 namespace backend_api.Controllers
 {
@@ -28,7 +29,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/dbstatus")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDBStatus()
         {
            var result = await _db.IsConnectionUp();
@@ -54,8 +55,44 @@ namespace backend_api.Controllers
         }
 
         [HttpGet]
+        [Route("/api/admin/vault/db/backend/token")]
+        public async Task<IActionResult> GetToken()
+        {
+            var result = await _vault.GetAppToken("backenddb");
+            if (result.RequestId != "")
+            {
+                
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(new { state = "can not get Token" });
+            }
+
+        }
+
+        [HttpGet]
+        [Route("/api/admin/vault/db/backend/secret")]
+        public async Task<IActionResult> GetSecret()
+        {
+            var tempClient = new TempVaultContext(_vault, "backenddb", _vault.GetVaultHost());
+            var result = await tempClient.GetSecret("db/login", "secret");
+            
+            if(result.Data.ContainsKey("password") && result.Data.ContainsKey("user"))
+            {
+                
+                return Ok(new DbLogin { User = result.Data["user"].ToString(), Password = result.Data["password"].ToString()});
+            }
+
+            return Ok(result.Data);
+
+        }
+
+
+
+        [HttpGet]
         [Route("/api/admin/job/bulkinsert")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> InsertMany([FromQuery] string filename)
         {
             List<Airport> airports = new List<Airport>();

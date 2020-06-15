@@ -10,6 +10,10 @@ using static backend_api.Extensions.MongoServiceExtension;
 using static backend_api.Extensions.VaultServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using backend_api.Model;
+using backend_api.Extensions;
+using VaultSharp;
+using backend_api.Vault;
+using backend_api.Database;
 
 namespace backend_api
 {
@@ -17,6 +21,8 @@ namespace backend_api
     {
         
         private IWebHostEnvironment CurrentEnvironment{ get; set; }
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             
@@ -24,15 +30,14 @@ namespace backend_api
             CurrentEnvironment = environment;
             
         }
-
-        public IConfiguration Configuration { get; }
+       
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddMongoClient(Configuration, CurrentEnvironment);
             services.AddVaultApp(Configuration, CurrentEnvironment);
+            services.AddMongoClient(Configuration, CurrentEnvironment);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
 
                 options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt").Result;
@@ -51,7 +56,7 @@ namespace backend_api
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"The Application is running in Development mode");
                     AdminController.isProduction = false;
-                  
+
                     break;
 
                 case false:
@@ -61,12 +66,16 @@ namespace backend_api
                     
                     AdminController.isProduction = true;
                     
+                    
                     break;
             }
+
+            
             if (CurrentEnvironment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
 
             app.UseRouting();
 
@@ -77,6 +86,10 @@ namespace backend_api
             {
                 endpoints.MapControllers();
             });
+            // Todo check if vault is up and running
+            //app.UseVaultTemp();
+
+            
         }
     }
 }

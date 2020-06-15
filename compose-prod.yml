@@ -51,11 +51,16 @@ services:
     build: 
       context: ./backend/backend_api
       dockerfile: Dockerfile
+    environment:
+      - VaultTokens.ProdToken=${VaultRoot}
+      - VaultTokens.DevToken=default
     volumes: 
       - ./backend/backend_api/Data/Static:/data/staticfiles
     networks: 
       Prod_Net:
         ipv4_address: 172.28.0.3
+    depends_on: 
+      - vault
   vault:
     <<: *logging-svc
     image: vault

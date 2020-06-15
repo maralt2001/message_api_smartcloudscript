@@ -159,13 +159,6 @@ app.get('/api/admin/backend/vault/pathinfo', async(req:Request, res:Response, ne
     res.status(200).json(body);
 })
 
-app.get('/api/admin/backend/vault/ui', async(req:Request, res:Response, next:NextFunction) => {
-
-    res.redirect(301,'http://172.28.0.2:8200/ui')
-    
-    
-        
-})
 
 
 

@@ -54,6 +54,9 @@ services:
     <<: *logging-svc
     image: backend_api
     container_name: backend_api
+    environment: 
+      - VaultTokens.DevToken=${vaultRoot}
+      - VaultTokens.ProdToken=${vaultRoot}
     build: 
       context: ./backend/backend_api
       dockerfile: Dockerfile
