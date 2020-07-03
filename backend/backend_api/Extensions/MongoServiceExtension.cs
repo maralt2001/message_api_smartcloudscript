@@ -27,12 +27,14 @@ namespace backend_api.Extensions
             }
             else
             {
-
                 services.AddSingleton<IDBContext>(sp => new MongoWithCredential(
-                    config.GetSection("DBConnection").GetSection("DB").Value,
-                    config.GetSection("DBConnection").GetSection("Path").Value,
-                    "web",
-                    "db"));
+                     config.GetSection("DBConnection").GetSection("DB").Value,
+                     config.GetSection("DBConnection").GetSection("Path").Value,
+                     "web",
+                     "db"
+                    ));
+
+                
             }
             
         }
