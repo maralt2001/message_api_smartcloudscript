@@ -12,6 +12,7 @@ using backend_api.Model;
 using backend_api.Extensions;
 using backend_api.Vault;
 using Microsoft.IdentityModel.Tokens;
+using backend_api.Database;
 
 namespace backend_api
 {
@@ -40,6 +41,8 @@ namespace backend_api
                 options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt").Result;
 
             });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,7 +62,10 @@ namespace backend_api
                     VaultAccess.AdminToken = Configuration.GetValue<string>("VaultTokens:DevToken");
                     VaultAccess.HealthCheckTimer = Configuration.GetValue<int>("VaultSettings:HealthCheckTimer");
                     VaultAccess.DBPolicy = Configuration.GetValue<string>("VaultSettings:Backend_DB_Policy");
+                    
                     VaultJobScheduler.Start();
+
+                   
 
                     break;
 
@@ -73,8 +79,11 @@ namespace backend_api
                     
                     VaultAccess.AdminToken = Configuration.GetValue<string>("VaultTokens:ProdToken");
                     VaultAccess.HealthCheckTimer = Configuration.GetValue<int>("VaultSettings:HealthCheckTimer");
+                    VaultAccess.DBPolicy = Configuration.GetValue<string>("VaultSettings:Backend_DB_Policy");
+
                     VaultJobScheduler.Start();
 
+                    
 
                     break;
             }

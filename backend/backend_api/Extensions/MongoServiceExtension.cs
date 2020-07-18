@@ -24,6 +24,8 @@ namespace backend_api.Extensions
                 services.AddSingleton<IDBContext>(sp => new MongoLocalDB(
                     config.GetSection("DBConnection").GetSection("DB").Value
                 ));
+
+                
             }
             else
             {

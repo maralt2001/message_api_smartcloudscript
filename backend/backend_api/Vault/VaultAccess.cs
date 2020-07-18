@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using backend_api.Controllers;
+using backend_api.Database;
 using backend_api.Tracker;
+using backend_api.Vault.Models;
 using Quartz;
 using Quartz.Impl;
 using VaultSharp;
@@ -11,12 +15,13 @@ using VaultSharp.Core;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.Commons;
+using static backend_api.Database.DBContext;
 
 namespace backend_api.Vault
 {
-    public abstract class VaultAccess
+    public class VaultAccess : IVaultAccess
     {
-        
+
         public static string BaseUrl { get; set; }
         public static string PathSealState { get; set; }
         public static int HealthCheckTimer { get; set; }
@@ -27,21 +32,36 @@ namespace backend_api.Vault
         public static VaultSolution VaultAdminClientSolution { get; set; }
         public static VaultSolution VaultDBClientSolution { get; set; }
 
+        public async void CreateMongoWithVaultCredentials()
+        {
 
+            
+            var check = typeof(IDBContext).IsAssignableFrom(typeof(MongoWithCredentialVault));
+            if(check)
+            {
+                
+                var result = await GetSecret("db/login", "secret");
+                var dblogin = result.Data;
+                
+                AdminController.mongoWithCredentialVault = new MongoWithCredentialVault("WebDB", "backend_db", dblogin.user, dblogin.password);
+                Console.WriteLine("Mongo: created Mongo Client with vault credentials");
+                
+            }
 
+        }
 
-        public async Task<Dictionary<string, object>> GetSecret(string mountpoint, string path)
+        public async Task<Secret<DBLoginFromVault>> GetSecret(string path, string mountpoint)
         {
             try
             {
                 // path:db/login/ mountpoint:secret
-                var secret = await DBClient.V1.Secrets.KeyValue.V1.ReadSecretAsync(path, mountpoint);
-                return secret.Data;
+                var secret = await DBClient.V1.Secrets.KeyValue.V1.ReadSecretAsync<DBLoginFromVault>(path, mountpoint);
+                return secret;
             }
-            catch (Exception)
+            catch (VaultApiException e)
             {
-
-                return new Dictionary<string, object>();
+                Console.WriteLine(e.Message);
+                return new Secret<DBLoginFromVault>();
             }
         }
 
@@ -110,6 +130,7 @@ namespace backend_api.Vault
             if(e.PropertyName == "Authenticated")
             {
                 Console.WriteLine($"Vault: Admin is Authenticated {VaultAdminClientSolution.Authenticated}");
+                
             }
             
         }
@@ -121,12 +142,11 @@ namespace backend_api.Vault
         public DBClientVault(string policy)
         {
            
-                IAuthMethodInfo authMethod = new TokenAuthMethodInfo(GetAppToken(policy).GetAwaiter().GetResult());
-                var vaultClientSettings = new VaultClientSettings(BaseUrl, authMethod);
-                DBClient = new VaultClient(vaultClientSettings);
-                VaultDBClientSolution = new VaultSolution { VaultItem = VaultItem.VaultDBClient };
-                VaultDBClientSolution.PropertyChanged += VaultDB_PropertyChanged;
-            
+            IAuthMethodInfo authMethod = new TokenAuthMethodInfo(GetAppToken(policy).GetAwaiter().GetResult());
+            var vaultClientSettings = new VaultClientSettings(BaseUrl, authMethod);
+            DBClient = new VaultClient(vaultClientSettings);
+            VaultDBClientSolution = new VaultSolution { VaultItem = VaultItem.VaultDBClient };
+            VaultDBClientSolution.PropertyChanged += VaultDB_PropertyChanged;
             
         }
 
@@ -184,6 +204,9 @@ namespace backend_api.Vault
             if(VaultDBClientSolution == null && VaultAdminClientSolution.Authenticated && VaultAdminClientSolution.Sealed != true)
             {
                 new DBClientVault(DBPolicy);
+                CreateMongoWithVaultCredentials();
+
+
             }
 
             try

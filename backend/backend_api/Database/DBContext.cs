@@ -18,6 +18,7 @@ namespace backend_api.Database
         public MongoClient MongoClient { get; set; }
         public IMongoDatabase Database { get; set; }
 
+
         public async Task<bool> InsertRecordAsync<T>(string collectionName, T record)
         {
             try
@@ -203,9 +204,8 @@ namespace backend_api.Database
 
    public class MongoWithCredentialVault : DBContext
     {
-        public static string user = "";
-        public static string password = "";
-        public MongoWithCredentialVault(string databaseName, string databaseUrl)
+        
+        public MongoWithCredentialVault(string databaseName, string databaseUrl, string user, string password)
         {
 
 

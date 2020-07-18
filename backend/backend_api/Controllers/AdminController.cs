@@ -8,7 +8,8 @@ using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Linq;
-
+using Newtonsoft.Json.Serialization;
+using static backend_api.Database.DBContext;
 
 namespace backend_api.Controllers
 {
@@ -17,12 +18,18 @@ namespace backend_api.Controllers
     {
         private readonly IDBContext _db;
         public static bool isProduction = false;
+        public static MongoWithCredentialVault mongoWithCredentialVault { get; set; }
 
         public AdminController(IDBContext db)
         {
-            _db = db;
-           
-            
+            if(mongoWithCredentialVault != null && isProduction)
+            {
+                _db = mongoWithCredentialVault;
+            }
+            else
+            {
+                _db = db;
+            }
         }
 
         [HttpGet]
