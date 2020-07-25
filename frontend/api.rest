@@ -7,6 +7,12 @@ GET  https://smartcloudscript.de/api/date/days-this-year
 ### Get Airport by icao code from smartcloud...
 GET https://smartcloudscript.de/api/airport?icao=LGAV
 
+### Data from metrics
+GET https://smartcloudscript.de/api/admin/metrics HTTP/1.1
+
+### Check DB Status
+GET  https://smartcloudscript.de/api/admin/dbstatus
+
 
 ## Development
 
