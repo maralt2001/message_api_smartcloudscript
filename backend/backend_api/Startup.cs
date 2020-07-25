@@ -13,6 +13,7 @@ using backend_api.Extensions;
 using backend_api.Vault;
 using Microsoft.IdentityModel.Tokens;
 using backend_api.Database;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace backend_api
 {
@@ -35,6 +36,8 @@ namespace backend_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+            services.AddMetrics();
             services.AddMongoClient(Configuration, CurrentEnvironment);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
 

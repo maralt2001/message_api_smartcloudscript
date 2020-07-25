@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Linq;
 using Newtonsoft.Json.Serialization;
 using static backend_api.Database.DBContext;
+using App.Metrics;
+using App.Metrics.Counter;
 
 namespace backend_api.Controllers
 {
@@ -17,10 +19,11 @@ namespace backend_api.Controllers
     public class AdminController: ControllerBase
     {
         private readonly IDBContext _db;
+        private readonly IMetrics _metrics;
         public static bool isProduction = false;
         public static MongoWithCredentialVault mongoWithCredentialVault { get; set; }
 
-        public AdminController(IDBContext db)
+        public AdminController(IDBContext db, IMetrics metrics)
         {
             if(mongoWithCredentialVault != null && isProduction)
             {
@@ -30,6 +33,7 @@ namespace backend_api.Controllers
             {
                 _db = db;
             }
+            _metrics = metrics;
         }
 
         [HttpGet]
@@ -38,6 +42,15 @@ namespace backend_api.Controllers
         public async Task<IActionResult> GetDBStatus()
         {
            var result = await _db.IsConnectionUp();
+            if(result)
+            {
+                _metrics.Measure.Counter.Increment(new CounterOptions { Name = "RequestDBConnectionIsUp", Context = "Database", MeasurementUnit = Unit.Calls });
+            }
+            else
+            {
+                _metrics.Measure.Counter.Increment(new CounterOptions { Name = "RequestDBConnectionIsDown", Context = "Database", MeasurementUnit = Unit.Calls });
+            }
+           
            return result ? Ok(new {state = "connection ist up"}) : Ok(new {state = "connection is down"});
 
            

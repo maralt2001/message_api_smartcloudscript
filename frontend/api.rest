@@ -14,7 +14,7 @@ GET https://smartcloudscript.de/api/airport?icao=LGAV
 GET http://localhost:5000/api/date/days-this-year
 
 ### Get World Airports
-GET http://localhost:5000/api/airport?icao=EDDK HTTP/1.1
+GET http://localhost:5000/api/airport?icao=EDDH HTTP/1.1
 
 ### Set index on Airports Collection
 GET http://localhost:5000/api/admin/db/createindex?key=icao
