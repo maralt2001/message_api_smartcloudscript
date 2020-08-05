@@ -22,5 +22,19 @@ namespace backend_api.Metrics
             Context = "Database",
             MeasurementUnit = Unit.Calls
         };
+
+        public static CounterOptions AirportRequest => new CounterOptions
+        {
+            Name = "AirportRequestSum",
+            Context = "AirportController",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static CounterOptions AirportBadRequest => new CounterOptions
+        {
+            Name = "AirportBadRequestSum",
+            Context = "AirportController",
+            MeasurementUnit = Unit.Calls
+        };
     }
 }

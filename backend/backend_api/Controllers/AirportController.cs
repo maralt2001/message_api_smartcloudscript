@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using System;
 using backend_api.Database;
 using System.Threading.Tasks;
+using App.Metrics;
+using backend_api.Metrics;
 
 namespace backend_api.Controllers
 {
@@ -12,10 +14,12 @@ namespace backend_api.Controllers
     public class AirportController : ControllerBase
     {
         private readonly IDBContext _db;
-        
-        public AirportController(IDBContext db)
+        private readonly IMetrics _metrics;
+
+        public AirportController(IDBContext db, IMetrics metrics)
         {
             _db = db;
+            _metrics = metrics;
         }
 
         [HttpGet]
@@ -26,10 +30,12 @@ namespace backend_api.Controllers
             if(fieldValue != string.Empty)
             {
                 Airport airport = await _db.LoadRecordAsync<Airport>("airports","icao",fieldValue);
+                _metrics.Measure.Counter.Increment(MetricsRegistry.AirportRequest);
                 return Ok(airport);
             }
             else
             {
+                _metrics.Measure.Counter.Increment(MetricsRegistry.AirportBadRequest);
                 return BadRequest();
             }
         }
