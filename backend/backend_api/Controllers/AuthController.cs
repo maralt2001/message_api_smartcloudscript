@@ -68,7 +68,11 @@ namespace backend_api.Controllers
         public async Task<IActionResult> RegisterBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
             var check = await _db.LoadRecordAsync<BackendAdmin>("BackendAdmins", "email", backendAdmin.Email);
-            if(check.Email != backendAdmin.Email || check == null)
+            if(check == null)
+            {
+                check = new BackendAdmin();
+            }
+            if(check.Email != backendAdmin.Email)
 
             {
                 var admin = new BackendAdmin(backendAdmin.Email, backendAdmin.Password, backendAdmin.Active);
