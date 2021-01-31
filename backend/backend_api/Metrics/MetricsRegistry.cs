@@ -23,6 +23,34 @@ namespace backend_api.Metrics
             MeasurementUnit = Unit.Calls
         };
 
+        public static CounterOptions LoginRequestSuccess => new CounterOptions
+        {
+            Name = "LoginRequestSuccess",
+            Context = "Login",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static CounterOptions LoginRequestFailed => new CounterOptions
+        {
+            Name = "LoginRequestFailed",
+            Context = "Login",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static CounterOptions RegisterRequestSuccess => new CounterOptions
+        { 
+            Name = "RegisterRequestSuccess",
+            Context = "Register",
+            MeasurementUnit = Unit.Calls
+        };
+
+        public static CounterOptions RegisterRequestFailed => new CounterOptions
+        {
+            Name = "RegisterRequestFailed",
+            Context = "Register",
+            MeasurementUnit = Unit.Calls
+        };
+
         public static CounterOptions AirportRequest => new CounterOptions
         {
             Name = "AirportRequestSum",
