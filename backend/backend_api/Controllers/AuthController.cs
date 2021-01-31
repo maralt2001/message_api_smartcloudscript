@@ -67,26 +67,36 @@ namespace backend_api.Controllers
 
         public async Task<IActionResult> RegisterBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
-            Console.WriteLine(backendAdmin);
-            
-          
-            var admin = new BackendAdmin(backendAdmin.Email,backendAdmin.Password,backendAdmin.Active);
-            var register = Task.Run(() => {
+            var check = await _db.LoadRecordAsync<BackendAdmin>("Backendadmins", "email", backendAdmin.Email);
+            if(check.Email != backendAdmin.Email)
 
-                var result = _db.InsertRecordAsync("BackendAdmins", admin);
-                return result;
-            });
-            
-            if(await register)
             {
-                _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestSuccess);
-                return Ok(new { state = "Success Register" });
+                var admin = new BackendAdmin(backendAdmin.Email, backendAdmin.Password, backendAdmin.Active);
+                var register = Task.Run(() => {
+
+                    var result = _db.InsertRecordAsync("BackendAdmins", admin);
+                    return result;
+                });
+
+                if (await register)
+                {
+                    _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestSuccess);
+                    return Ok(new { state = "Success Register" });
+                }
+                else
+                {
+                    _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestFailed);
+                    return BadRequest(new { state = "Register failed" });
+                }
             }
+
             else
             {
                 _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestFailed);
                 return BadRequest(new { state = "Register failed" });
             }
+          
+            
             
 
         }
