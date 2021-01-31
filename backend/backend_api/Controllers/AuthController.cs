@@ -71,6 +71,7 @@ namespace backend_api.Controllers
             if(check == null)
             {
                 check = new BackendAdmin();
+
             }
             if(check.Email != backendAdmin.Email)
 
