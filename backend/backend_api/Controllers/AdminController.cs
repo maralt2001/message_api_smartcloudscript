@@ -13,6 +13,10 @@ using static backend_api.Database.DBContext;
 using App.Metrics;
 using App.Metrics.Counter;
 using backend_api.Metrics;
+using Prometheus;
+using App.Metrics.Formatters.Prometheus;
+using Prometheus.HttpClientMetrics;
+
 
 namespace backend_api.Controllers
 {
@@ -35,6 +39,7 @@ namespace backend_api.Controllers
                 _db = db;
             }
             _metrics = metrics;
+            
         }
 
         [HttpGet]
@@ -46,12 +51,14 @@ namespace backend_api.Controllers
             if(result)
             {
                 _metrics.Measure.Counter.Increment(MetricsRegistry.DBConnectionUp);
+                
+                
             }
             else
             {
                 _metrics.Measure.Counter.Increment(MetricsRegistry.DBConnectionDown);
             }
-           
+            
            return result ? Ok(new {state = "connection ist up"}) : Ok(new {state = "connection is down"});
 
            

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using App.Metrics;
+using App.Metrics.Formatters.Prometheus;
 using backend_api.Database;
 using backend_api.Metrics;
 using backend_api.Model;
@@ -14,6 +16,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using Prometheus;
+
 
 namespace backend_api.Controllers
 {
@@ -23,11 +27,14 @@ namespace backend_api.Controllers
     {
         private readonly IDBContext _db;
         private readonly IMetrics _metrics;
+        public Stopwatch _stopwatch = new Stopwatch();
 
         public AuthController(IDBContext db, IMetrics metrics)
         {
             _db = db;
             _metrics = metrics;
+            
+            
         }
 
         [HttpPost]
@@ -35,27 +42,41 @@ namespace backend_api.Controllers
 
         public async Task<IActionResult> LoginBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
-            
+            _stopwatch.Start();
+
             BackendAdmin admin = await _db.LoadRecordAsync<BackendAdmin>("BackendAdmins", "email", backendAdmin.Email);
 
-            if(admin != null)
+            void OnHit()
+            {
+                _stopwatch.Stop();
+                MetricsRegistry.LoginRequestHistogram.Observe(_stopwatch.Elapsed.TotalMilliseconds);
+                MetricsRegistry.ProcessedJobCount.Inc();
+
+            }
+
+
+            if (admin != null)
             {
                 PasswordVerificationResult result = await admin.PasswordVerification(admin.Password, backendAdmin.Password);
 
                 if(result.ToString() == "Success")
                 {
                     var token = await admin.CreateJWTAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt", 1);
-                    _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestSuccess);
+                    _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestSuccess);                 
+                    OnHit();
                     return Ok(new { your_token = token });
                 }
                 else
                 {
                     _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestFailed);
+                    OnHit();
                     return BadRequest(new { state = "Login failed" });
                 }
             }
             else
             {
+                _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestFailed);
+                OnHit();
                 return BadRequest(new { state = "Login failed" });
             }
 
@@ -71,7 +92,6 @@ namespace backend_api.Controllers
             if(check == null)
             {
                 check = new BackendAdmin();
-
             }
             if(check.Email != backendAdmin.Email)
 

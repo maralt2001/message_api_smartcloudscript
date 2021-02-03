@@ -1,5 +1,8 @@
 ﻿using App.Metrics;
 using App.Metrics.Counter;
+using App.Metrics.Formatters.Prometheus;
+using Prometheus.HttpClientMetrics;
+using Prometheus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +25,17 @@ namespace backend_api.Metrics
             Context = "Database",
             MeasurementUnit = Unit.Calls
         };
+
+        public static Prometheus.Counter ProcessedJobCount = Prometheus.Metrics.CreateCounter("backend_request_operation_total", "total number processed in backend");
+
+        public static Prometheus.Histogram LoginRequestHistogram = 
+            Prometheus.Metrics.CreateHistogram(
+                        "backend_loginRequest_duration_MilliSeconds",
+                        "Histogram for the LoginDuration in ms in backend.",
+                        new HistogramConfiguration
+                        {
+                            Buckets = Prometheus.Histogram.LinearBuckets(start: 2.0, width: 2, count: 5)
+                        });
 
         public static CounterOptions LoginRequestSuccess => new CounterOptions
         {

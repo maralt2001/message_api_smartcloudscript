@@ -14,6 +14,7 @@ using backend_api.Vault;
 using Microsoft.IdentityModel.Tokens;
 using backend_api.Database;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Prometheus;
 
 namespace backend_api
 {
@@ -97,11 +98,13 @@ namespace backend_api
                 app.UseDeveloperExceptionPage();
             }
 
-
+            
             app.UseRouting();
 
             app.UseAuthorization();
 
+            app.UseMetricServer(url: "/api/admin/backend/metrics");
+            
 
             app.UseEndpoints(endpoints =>
             {
@@ -109,7 +112,9 @@ namespace backend_api
             });
 
             
-            
+
+
+
 
         }
 
