@@ -1,82 +1,41 @@
-﻿using App.Metrics;
-using App.Metrics.Counter;
-using App.Metrics.Formatters.Prometheus;
-using Prometheus.HttpClientMetrics;
+﻿
 using Prometheus;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace backend_api.Metrics
+
+namespace backend_api.MetricsDefinition
 {
     public class MetricsRegistry
     {
-        public static CounterOptions DBConnectionUp => new CounterOptions
-        {
-            Name = "RequestDBConnectionIsUp",
-            Context = "Database",
-            MeasurementUnit = Unit.Calls
-        };
+        
 
-        public static CounterOptions DBConnectionDown => new CounterOptions
-        {
-            Name = "RequestDBConnectionIsDown",
-            Context = "Database",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendDBConnectionDown = Metrics.CreateCounter("backend_dbconnection_down", "total number dbconnection dwon");
 
-        public static Prometheus.Counter ProcessedJobCount = Prometheus.Metrics.CreateCounter("backend_request_operation_total", "total number processed in backend");
+        public static Counter BackendDBConnectionUp = Metrics.CreateCounter("backend_dbconnection_up", "total number dbconnection up");
 
-        public static Prometheus.Histogram LoginRequestHistogram = 
-            Prometheus.Metrics.CreateHistogram(
+        public static Counter ProcessedJobCount = Metrics.CreateCounter("backend_request_operation_total", "total number processed in backend");
+
+        public static Histogram LoginRequestHistogram = 
+                Metrics.CreateHistogram(
                         "backend_loginRequest_duration_MilliSeconds",
                         "Histogram for the LoginDuration in ms in backend.",
                         new HistogramConfiguration
                         {
-                            Buckets = Prometheus.Histogram.LinearBuckets(start: 2.0, width: 2, count: 5)
+                            Buckets = Histogram.LinearBuckets(start: 2.0, width: 2, count: 5)
                         });
 
-        public static CounterOptions LoginRequestSuccess => new CounterOptions
-        {
-            Name = "LoginRequestSuccess",
-            Context = "Login",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendLoginRequestSuccess = Metrics.CreateCounter("backend_loginRequest_success", "total number login request success");
 
-        public static CounterOptions LoginRequestFailed => new CounterOptions
-        {
-            Name = "LoginRequestFailed",
-            Context = "Login",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendLoginRequestFailed = Metrics.CreateCounter("backend_loginRequest_failed", "total number login request failed");
 
-        public static CounterOptions RegisterRequestSuccess => new CounterOptions
-        { 
-            Name = "RegisterRequestSuccess",
-            Context = "Register",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendRegisterRequestSuccess = Metrics.CreateCounter("backend_registerRequest_success", "total number register request success");
 
-        public static CounterOptions RegisterRequestFailed => new CounterOptions
-        {
-            Name = "RegisterRequestFailed",
-            Context = "Register",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendRegisterRequestFailed = Metrics.CreateCounter("backend_registerRequest_failed", "total number register request failed");
 
-        public static CounterOptions AirportRequest => new CounterOptions
-        {
-            Name = "AirportRequestSum",
-            Context = "AirportController",
-            MeasurementUnit = Unit.Calls
-        };
 
-        public static CounterOptions AirportBadRequest => new CounterOptions
-        {
-            Name = "AirportBadRequestSum",
-            Context = "AirportController",
-            MeasurementUnit = Unit.Calls
-        };
+        public static Counter BackendAirportRequestSuccess = Metrics.CreateCounter("backend_airportRequest_success", "total number airport request success");
+        public static Counter BackendAirportRequestFailed = Metrics.CreateCounter("backend_airportRequest_failed", "total number airport request failed");
+
+
+        
     }
 }

@@ -12,7 +12,7 @@ using Newtonsoft.Json.Serialization;
 using static backend_api.Database.DBContext;
 using App.Metrics;
 using App.Metrics.Counter;
-using backend_api.Metrics;
+using backend_api.MetricsDefinition;
 using Prometheus;
 using App.Metrics.Formatters.Prometheus;
 using Prometheus.HttpClientMetrics;
@@ -50,13 +50,12 @@ namespace backend_api.Controllers
            var result = await _db.IsConnectionUp();
             if(result)
             {
-                _metrics.Measure.Counter.Increment(MetricsRegistry.DBConnectionUp);
-                
+                MetricsRegistry.BackendDBConnectionUp.Inc();
                 
             }
             else
             {
-                _metrics.Measure.Counter.Increment(MetricsRegistry.DBConnectionDown);
+                MetricsRegistry.BackendDBConnectionDown.Inc();
             }
             
            return result ? Ok(new {state = "connection ist up"}) : Ok(new {state = "connection is down"});

@@ -4,10 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using App.Metrics;
 using App.Metrics.Formatters.Prometheus;
 using backend_api.Database;
-using backend_api.Metrics;
+using backend_api.MetricsDefinition;
 using backend_api.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -26,13 +25,12 @@ namespace backend_api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IDBContext _db;
-        private readonly IMetrics _metrics;
         public Stopwatch _stopwatch = new Stopwatch();
 
-        public AuthController(IDBContext db, IMetrics metrics)
+        public AuthController(IDBContext db)
         {
             _db = db;
-            _metrics = metrics;
+            
             
             
         }
@@ -62,20 +60,20 @@ namespace backend_api.Controllers
                 if(result.ToString() == "Success")
                 {
                     var token = await admin.CreateJWTAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt", 1);
-                    _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestSuccess);                 
+                    MetricsRegistry.BackendLoginRequestSuccess.Inc();                
                     OnHit();
                     return Ok(new { your_token = token });
                 }
                 else
                 {
-                    _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestFailed);
+                    MetricsRegistry.BackendLoginRequestFailed.Inc();
                     OnHit();
                     return BadRequest(new { state = "Login failed" });
                 }
             }
             else
             {
-                _metrics.Measure.Counter.Increment(MetricsRegistry.LoginRequestFailed);
+                MetricsRegistry.BackendLoginRequestFailed.Inc();
                 OnHit();
                 return BadRequest(new { state = "Login failed" });
             }
@@ -105,19 +103,19 @@ namespace backend_api.Controllers
 
                 if (await register)
                 {
-                    _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestSuccess);
+                    MetricsRegistry.BackendRegisterRequestSuccess.Inc();
                     return Ok(new { state = "Success Register" });
                 }
                 else
                 {
-                    _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestFailed);
+                    MetricsRegistry.BackendRegisterRequestFailed.Inc();
                     return BadRequest(new { state = "Register failed" });
                 }
             }
 
             else
             {
-                _metrics.Measure.Counter.Increment(MetricsRegistry.RegisterRequestFailed);
+                MetricsRegistry.BackendRegisterRequestFailed.Inc();
                 return BadRequest(new { state = "Register failed" });
             }
           
