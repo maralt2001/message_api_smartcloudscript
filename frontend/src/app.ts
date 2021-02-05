@@ -159,9 +159,9 @@ app.get('/api/admin/backend/vault/pathinfo', async(req:Request, res:Response, ne
     res.status(200).json(body);
 })
 
-app.get('/api/admin/metrics', async(req:Request, res:Response, next:NextFunction) => {
+app.get('/api/admin/backend/metrics', async(req:Request, res:Response, next:NextFunction) => {
     
-    const result = await fetch('http://backend_api/metrics-text');
+    const result = await fetch('http://backend_api/api/admin/backend/metrics');
     const body = await result.text();
     console.log(body);
     res.status(200).send(body);
