@@ -57,7 +57,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/backendadmins")]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> GetBackendadmins()
         {
