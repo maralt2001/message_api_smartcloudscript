@@ -22,7 +22,4 @@
     <PackageReference Include="VaultSharp" Version="1.4.0.3" />
   </ItemGroup>
 
-  
-
-
 </Project>

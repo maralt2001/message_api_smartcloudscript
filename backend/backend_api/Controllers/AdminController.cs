@@ -7,15 +7,9 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Linq;
-using Newtonsoft.Json.Serialization;
 using static backend_api.Database.DBContext;
-using App.Metrics;
-using App.Metrics.Counter;
 using backend_api.MetricsDefinition;
-using Prometheus;
-using App.Metrics.Formatters.Prometheus;
-using Prometheus.HttpClientMetrics;
+
 
 
 namespace backend_api.Controllers
@@ -24,11 +18,10 @@ namespace backend_api.Controllers
     public class AdminController: ControllerBase
     {
         private readonly IDBContext _db;
-        private readonly IMetrics _metrics;
         public static bool isProduction = false;
         public static MongoWithCredentialVault mongoWithCredentialVault { get; set; }
 
-        public AdminController(IDBContext db, IMetrics metrics)
+        public AdminController(IDBContext db)
         {
             if(mongoWithCredentialVault != null && isProduction)
             {
@@ -38,7 +31,6 @@ namespace backend_api.Controllers
             {
                 _db = db;
             }
-            _metrics = metrics;
             
         }
 
@@ -61,6 +53,29 @@ namespace backend_api.Controllers
            return result ? Ok(new {state = "connection ist up"}) : Ok(new {state = "connection is down"});
 
            
+        }
+
+        [HttpGet]
+        [Route("/api/admin/backendadmins")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        public async Task<IActionResult> GetBackendadmins()
+        {
+            var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
+
+            if(result.Count == 0)
+            {
+                return Ok(new { state = "no Admins in db" });
+            }
+            else
+            {
+                List<string> list = new List<string>();
+                foreach (var item in result)
+                {
+                    list.Add(item.Email);
+                }
+                return Ok(list);
+            }
         }
 
         [HttpGet]
