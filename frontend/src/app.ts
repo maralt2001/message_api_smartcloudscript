@@ -94,18 +94,12 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 })
 
 app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextFunction) => {
-
-    try {
-        const header = req.headers.authorization;
-        console.log(header);
-        const result = await fetch('http://backend_api/api/admin/backendadmins');
-        const body = await result.json();
-        res.status(200).json(body);
-    } catch (error) {
-        res.status(400).json({BadRequest:'something went wrong'})
-    }
-    
-});
+{
+    const token = req.headers.authorization;
+    const result = fetch('http://backend_api/api/admin/backendadmins',{method: 'GET', headers: {'Authorization': 'Bearer ' + token}});
+    const body = await result.json();
+    res.status(200).json(body);
+}
 
 app.get('/api/admin/dbstatus', async (req:Request, res:Response, next:NextFunction) => {
 
