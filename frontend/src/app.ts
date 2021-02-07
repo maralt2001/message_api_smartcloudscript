@@ -95,9 +95,14 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 
 app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextFunction) => {
 
-    const result = await fetch('http://backend_api/api/admin/backendadmins');
-    const body = await result.json();
-    res.status(200).json(body);
+    try {
+        const result = await fetch('http://backend_api/api/admin/backendadmins');
+        const body = await result.json();
+        res.status(200).json(body);
+    } catch (error) {
+        res.status(400).json({BadRequest:'something went wrong'})
+    }
+    
 });
 
 app.get('/api/admin/dbstatus', async (req:Request, res:Response, next:NextFunction) => {
