@@ -20,7 +20,8 @@ namespace backend_api.MetricsDefinition
                         "Histogram for the LoginDuration in ms in backend.",
                         new HistogramConfiguration
                         {
-                            Buckets = Histogram.LinearBuckets(start: 2.0, width: 2, count: 5)
+                            Buckets = Histogram.LinearBuckets(start: 20, width: 10, count: 5)
+                            
                         });
 
         public static Counter BackendLoginRequestSuccess = Metrics.CreateCounter("backend_loginRequest_success", "total number login request success");
