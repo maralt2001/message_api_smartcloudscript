@@ -69,7 +69,7 @@ namespace backend_api.Controllers
             }
             else
             {
-                return Ok(result);
+                return Ok("hello");
             }
         }
 
