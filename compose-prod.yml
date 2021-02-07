@@ -51,8 +51,6 @@ services:
     build: 
       context: ./backend/backend_api
       dockerfile: Dockerfile
-    environment:
-     
     volumes: 
       - ./backend/backend_api/Data/Static:/data/staticfiles
     networks: 
