@@ -52,7 +52,6 @@ services:
       context: ./backend/backend_api
       dockerfile: Dockerfile
     environment:
-      - VaultTokens:ProdToken=${VaultRoot}
       - VaultSettings:HealthCheckTimer=25
       - VaultSettings:Backend_DB_Policy=backenddb
     volumes: 
