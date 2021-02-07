@@ -63,15 +63,9 @@ namespace backend_api.Controllers
         {
             var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
             Console.WriteLine(result);
-
-            if(result.Count == 0)
-            {
-                return Ok(new { state = "no Admins in db" });
-            }
-            else
-            {
-                return Ok("hello");
-            }
+            
+            return Ok("hello");
+            
         }
 
         [HttpGet]
