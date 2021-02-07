@@ -1,6 +1,4 @@
 #! /bin/bash
-read -p "Enter vault root token: " vaultRoot
-export VaultRoot="$vaultRoot"
 docker-compose -f compose-prod.yml up -d
 
 read -p "Enter vault unseal key1: " vaultunseal1
