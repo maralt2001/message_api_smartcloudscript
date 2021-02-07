@@ -57,7 +57,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/backendadmins")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
         public async Task<IActionResult> GetBackendadmins()
         {
@@ -69,12 +69,7 @@ namespace backend_api.Controllers
             }
             else
             {
-                List<string> list = new List<string>();
-                foreach (var item in result)
-                {
-                    list.Add(item.Email);
-                }
-                return Ok(list);
+                return Ok(result);
             }
         }
 
