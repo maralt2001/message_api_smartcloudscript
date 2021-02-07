@@ -62,6 +62,7 @@ namespace backend_api.Controllers
         public async Task<IActionResult> GetBackendadmins()
         {
             var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
+            Console.WriteLine(result);
 
             if(result.Count == 0)
             {
