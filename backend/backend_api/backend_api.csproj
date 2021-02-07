@@ -22,7 +22,7 @@
     <PackageReference Include="VaultSharp" Version="1.4.0.3" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  
 
 
 </Project>
