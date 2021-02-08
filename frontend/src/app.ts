@@ -1,14 +1,9 @@
 
 import express, {Request, Response, NextFunction} from 'express'
 
-
-
 import {DaysThisYear} from './classes/response'
 import {RequestLimiter} from './classes/requestLimiter'
 import {ILoginBackendAdmin, IRegisterBackendAdmin} from './classes/requestAdmin'
-import { OutgoingHttpHeaders, request } from 'http'
-
-
 
 
 //Provide environment variables
