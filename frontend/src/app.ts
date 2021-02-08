@@ -100,10 +100,10 @@ app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextF
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('Authorization', `${req.headers.authorization}`);
 
-
+    console.log(myHeaders);
     const result = fetch('http://backend_api/api/admin/backendadmins', {method: 'GET', headers: myHeaders});
     console.log(req.headers.authorization);
-    const body = await result;
+    const body = await result.text();
     console.log(body);
     res.status(200).json(body);
 });
