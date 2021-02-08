@@ -98,7 +98,7 @@ app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextF
     const myHeaders = new Headers();
 
     myHeaders.append('Content-Type', 'application/json');
-    myHeaders.append('Authorization', `Bearer ${req.headers.authorization}`);
+    myHeaders.append('Authorization', `${req.headers.authorization}`);
 
 
     const result = fetch('http://backend_api/api/admin/backendadmins', {method: 'GET', headers: myHeaders});
