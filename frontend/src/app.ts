@@ -1,9 +1,12 @@
 
 import express, {Request, Response, NextFunction} from 'express'
 
+
+
 import {DaysThisYear} from './classes/response'
 import {RequestLimiter} from './classes/requestLimiter'
 import {ILoginBackendAdmin, IRegisterBackendAdmin} from './classes/requestAdmin'
+import { OutgoingHttpHeaders, request } from 'http'
 
 
 
@@ -95,17 +98,17 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 
 app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextFunction) => {
 
-    const myHeaders = new Headers();
-
-    myHeaders.append('Content-Type', 'application/json');
-    myHeaders.append('Authorization', `${req.headers.authorization}`);
-
-    console.log(myHeaders);
-    const result = fetch('http://backend_api/api/admin/backendadmins', {method: 'GET', headers: myHeaders});
     console.log(req.headers.authorization);
-    const body = await result.text();
+    const result = await fetch('http://backend_api/api/admin/backendadmins', {
+	method: 'GET',
+	headers: {
+		'content-type': 'application/json',
+        'Authorization': `${req.headers.authorization}`
+	}
+    });
+    const body = await result;
     console.log(body);
-    res.status(200).json(body);
+
 });
 
 app.get('/api/admin/dbstatus', async (req:Request, res:Response, next:NextFunction) => {
