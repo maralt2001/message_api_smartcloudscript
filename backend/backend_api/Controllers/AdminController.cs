@@ -64,7 +64,12 @@ namespace backend_api.Controllers
             var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
             if(result.Count > 0)
             {
-                return Ok(result);
+                var listOfEmail = new List<string>();
+                foreach (var item in result)
+                {
+                    listOfEmail.Add(item.Email);
+                }
+                return Ok(listOfEmail);
             }
             else
             {
