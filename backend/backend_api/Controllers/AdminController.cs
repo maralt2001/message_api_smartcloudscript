@@ -64,7 +64,7 @@ namespace backend_api.Controllers
             var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
             Console.WriteLine(result);
             
-            return Ok("hello");
+            return Ok(result);
             
         }
 
