@@ -95,8 +95,13 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 
 app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextFunction) => {
 
-    
-    const result = fetch('http://backend_api/api/admin/backendadmins', {headers: { 'Authorization': `Bearer ${req.headers.authorization}`}});
+    const myHeaders = new Headers();
+
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', `Bearer ${req.headers.authorization}`);
+
+
+    const result = fetch('http://backend_api/api/admin/backendadmins', {method: 'GET', headers: myHeaders});
     console.log(req.headers.authorization);
     const body = await result;
     console.log(body);
