@@ -98,16 +98,21 @@ app.get('/api/airport', async (req:Request, res:Response, next:NextFunction) => 
 
 app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextFunction) => {
 
-    console.log(req.headers.authorization);
-    const result = await fetch('http://backend_api/api/admin/backendadmins', {
-	method: 'GET',
-	headers: {
-		'content-type': 'application/json',
-        'Authorization': `${req.headers.authorization}`
-	}
-    });
-    const body = await result.json();
-    console.log(body);
+    try {
+        const result = await fetch('http://backend_api/api/admin/backendadmins', {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': `${req.headers.authorization}`
+            }
+            });
+            const body = await result.json();
+            res.status(200).json(body) 
+    } catch (error) {
+        res.status(400).json({BadRequest: 'something went wrong'});
+    }
+    
+    
 
 });
 
