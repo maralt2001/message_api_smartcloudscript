@@ -106,7 +106,7 @@ app.get('/api/admin/backendadmins', async (req:Request, res:Response, next:NextF
         'Authorization': `${req.headers.authorization}`
 	}
     });
-    const body = await result;
+    const body = await result.json();
     console.log(body);
 
 });
