@@ -54,7 +54,9 @@ namespace backend_api
                         Configuration.GetValue<string>("TokenValidation:Symsec")
                         ).Result;
                 }
-                
+                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Issuer"));
+                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Audience"));
+                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Symsec"));
 
             });
 
