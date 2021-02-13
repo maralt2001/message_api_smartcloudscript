@@ -19,6 +19,7 @@ namespace backend_api.Database
         Task<int> BulkInsert<T> (List<T> data, string collectionName);
         Task<string> CreateIndex<T>(string collectionName, string indexKey);
         Task<bool> DropIndex<T>(string collectionName, string indexKey);
+        Task<int> CountDocumentsAsync<T>(string collectionName, string fieldKey, string fieldValue);
     }
 
         

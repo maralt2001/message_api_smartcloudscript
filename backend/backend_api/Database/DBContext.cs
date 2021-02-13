@@ -84,6 +84,14 @@ namespace backend_api.Database
             }
         }
 
+        public async Task<int> CountDocumentsAsync<T> (string collectionName, string fieldKey, string fieldValue)
+        {
+            IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq(fieldKey, fieldValue);
+            var result = Convert.ToInt32(await collection.CountDocumentsAsync(filter).ConfigureAwait(false));
+            return result;
+        }
+
         public async Task<bool> DeleteRecordAsync<T>(string collectionName, string id)
         {
             try

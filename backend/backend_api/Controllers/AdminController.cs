@@ -81,6 +81,25 @@ namespace backend_api.Controllers
         }
 
         [HttpGet]
+        [Route("/api/admin/backendadmins/count")]
+
+        public async Task<IActionResult> GetBackendadminsByEmailCount([FromQuery(Name ="email")] string fieldValue)
+        {
+            try
+            {
+                var result = await _db.CountDocumentsAsync<BackendAdmin>("BackendAdmins", "email", fieldValue);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+           
+        }
+
+
+        [HttpGet]
         [Route("/api/admin/job/bulkinsert")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> InsertMany([FromQuery] string filename)
@@ -140,6 +159,7 @@ namespace backend_api.Controllers
 
             
         }
+
 
         [HttpGet]
         [Route("/api/admin/job/airports/createindex")]
