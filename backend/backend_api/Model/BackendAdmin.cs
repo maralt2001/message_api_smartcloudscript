@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using backend_api.Vault.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -102,6 +103,7 @@ namespace backend_api.Model
             return await result;
             
         }
+
 
         public async Task<TokenValidationParameters> GetTokenValidationParameterAsync(string issuer, string audience, string symSec)
         {

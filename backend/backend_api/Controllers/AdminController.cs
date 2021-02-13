@@ -26,6 +26,7 @@ namespace backend_api.Controllers
             if(mongoWithCredentialVault != null && isProduction)
             {
                 _db = mongoWithCredentialVault;
+                
             }
             else
             {
@@ -39,6 +40,7 @@ namespace backend_api.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDBStatus()
         {
+           
            var result = await _db.IsConnectionUp();
             if(result)
             {

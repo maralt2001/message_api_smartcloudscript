@@ -8,6 +8,7 @@ backend/vault/file
 backend/vault/logs
 backend/vault/data/key.txt
 backend/backend_api/appsettings.Production.json
+solution-commands.txt
 
 
 

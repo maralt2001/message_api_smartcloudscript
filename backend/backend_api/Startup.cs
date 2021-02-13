@@ -41,7 +41,7 @@ namespace backend_api
             services.AddMetrics();
             services.AddMongoClient(Configuration, CurrentEnvironment);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-
+                
                 options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt").Result;
 
             });
