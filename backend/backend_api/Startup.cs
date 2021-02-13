@@ -41,25 +41,14 @@ namespace backend_api
             services.AddMetrics();
             services.AddMongoClient(Configuration, CurrentEnvironment);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-                
-                if(CurrentEnvironment.IsDevelopment())
-                {
-                    options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt").Result;
-                }
-                else
-                {
+            
                     options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync(
                         Configuration.GetValue<string>("TokenValidation:Issuer"),
                         Configuration.GetValue<string>("TokenValidation:Audience"),
                         Configuration.GetValue<string>("TokenValidation:Symsec")
                         ).Result;
-                }
-                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Issuer"));
-                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Audience"));
-                Console.WriteLine(Configuration.GetValue<string>("TokenValidation:Symsec"));
 
             });
-
             
         }
 

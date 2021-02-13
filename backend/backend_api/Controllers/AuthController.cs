@@ -11,6 +11,7 @@ using backend_api.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -26,11 +27,12 @@ namespace backend_api.Controllers
     {
         private readonly IDBContext _db;
         public Stopwatch _stopwatch = new Stopwatch();
+        private readonly IConfiguration _configuration;
 
-        public AuthController(IDBContext db)
+        public AuthController(IDBContext db, IConfiguration configuration)
         {
             _db = db;
-            
+            _configuration = configuration;
             
             
         }
@@ -59,7 +61,11 @@ namespace backend_api.Controllers
 
                 if(result.ToString() == "Success")
                 {
-                    var token = await admin.CreateJWTAsync("login", "smartcloudscript.de", "halloWelthalloWelthalloWelt", 1);
+                    var token = await admin.CreateJWTAsync(
+                        _configuration.GetValue<string>("TokenValidation:Issuer"), 
+                        _configuration.GetValue<string>("TokenValidation:Audience"),
+                        _configuration.GetValue<string>("TokenValidation:Symsec"),
+                        1);
                     MetricsRegistry.BackendLoginRequestSuccess.Inc();                
                     OnHit();
                     return Ok(new { your_token = token });
