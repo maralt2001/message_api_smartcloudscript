@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\contentFiles\any\netstandard2.0\Core\Compression\Snappy\lib\win\snappy32.dll" />
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\contentFiles\any\netstandard2.0\Core\Compression\Snappy\lib\win\snappy64.dll" />
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\contentFiles\any\netstandard2.0\Core\Compression\Zstandard\lib\win\libzstd.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="App.Metrics.AspNetCore.Core" Version="4.1.0" />
     <PackageReference Include="App.Metrics.AspNetCore.Endpoints" Version="4.1.0" />
     <PackageReference Include="App.Metrics.AspNetCore.Tracking" Version="4.1.0" />
@@ -20,6 +26,18 @@
     <PackageReference Include="Quartz" Version="3.2.4" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
     <PackageReference Include="VaultSharp" Version="1.6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\build\../runtimes/win/native/libzstd.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\build\../runtimes/win/native/snappy32.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Markus\.nuget\packages\mongodb.driver.core\2.11.6\build\../runtimes/win/native/snappy64.dll" />
   </ItemGroup>
 
 </Project>
