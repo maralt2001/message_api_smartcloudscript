@@ -82,7 +82,7 @@ namespace backend_api.Controllers
 
         [HttpGet]
         [Route("/api/admin/backendadmins/count")]
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetBackendadminsByEmailCount([FromQuery(Name ="email")] string fieldValue)
         {
             try
