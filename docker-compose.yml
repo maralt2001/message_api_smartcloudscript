@@ -39,6 +39,7 @@ services:
   frontend_api:
     <<: *logging-svc
     image: frontend_api
+    restart: always
     container_name: frontend_api
     build: 
       context: ./frontend/
@@ -53,6 +54,7 @@ services:
   backend_api:
     <<: *logging-svc
     image: backend_api
+    restart: always
     container_name: backend_api
     environment: 
       - VaultTokens.DevToken=${VaultRoot}
