@@ -24,6 +24,8 @@ namespace backend_api.MetricsDefinition
                             
                         });
 
+        public static Summary BackendDurationGetAirportSummary = Metrics.CreateSummary("backend_duration_get_ariprot", "Summary of duration get Airport in ms");
+
         public static Counter BackendLoginRequestSuccess = Metrics.CreateCounter("backend_loginRequest_success", "total number login request success");
 
         public static Counter BackendLoginRequestFailed = Metrics.CreateCounter("backend_loginRequest_failed", "total number login request failed");

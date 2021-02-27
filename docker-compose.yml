@@ -58,7 +58,6 @@ services:
     container_name: backend_api
     environment: 
       - VaultTokens.DevToken=${VaultRoot}
-      - VaultTokens:ProdToken=s.cd2HXfpEBeqBIitqMpiNySFv
       - VaultSettings:HealthCheckTimer=25
       - VaultSettings:Backend_DB_Policy=backenddb
     build: 
@@ -71,6 +70,19 @@ services:
           ipv4_address: 172.30.0.4
     depends_on: 
       - vault
+  backend_graph:
+    <<: *logging-svc
+    image: backend_graph
+    restart: always
+    container_name: backend_graph
+    build:
+      context: ./backend/backend_graph
+      dockerfile: Dockerfile
+    ports:
+      - 5001:80
+    networks:
+        Dev_Net:
+          ipv4_address: 172.30.0.6
   vault:
     image: vault
     container_name: vault
