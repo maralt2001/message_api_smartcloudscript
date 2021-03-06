@@ -37,8 +37,9 @@ namespace backend_api.Database
         public async Task<List<T>> LoadRecordsAsync<T>(string collectionName)
         {
             IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
-            return await collection.FindAsync(new BsonDocument()).Result.ToListAsync().ConfigureAwait(false);
 
+            return await collection.FindAsync(new BsonDocument()).Result.ToListAsync().ConfigureAwait(false) ?? default;
+            
         }
 
         public async Task<T> LoadRecordAsync<T>(string collectionName, string fieldKey, string fieldValue)
@@ -69,19 +70,13 @@ namespace backend_api.Database
 
         public async Task<T> LoadRecordAsync<T>(string collectionName, string id)
         {
-            try
-            {
+         
 
                 IMongoCollection<T> collection = Database.GetCollection<T>(collectionName);
                 FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
-                return await collection.FindAsync(filter).Result.FirstOrDefaultAsync().ConfigureAwait(false);
+                return await collection.FindAsync(filter).Result.FirstOrDefaultAsync().ConfigureAwait(false) ?? default;
 
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            
         }
 
         public async Task<int> CountDocumentsAsync<T> (string collectionName, string fieldKey, string fieldValue)

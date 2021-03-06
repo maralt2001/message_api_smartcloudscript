@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using App.Metrics;
 using backend_api.MetricsDefinition;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace backend_api.Controllers
 {
@@ -44,6 +45,14 @@ namespace backend_api.Controllers
                 MetricsRegistry.BackendAirportRequestFailed.Inc();
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        [Route("/api/airports")]
+        public async Task<IActionResult> GetAirports()
+        {
+            var result = await _db.LoadRecordsAsync<Airport>("airports");
+            return Ok(result);
         }
 
         
