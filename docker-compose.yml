@@ -70,19 +70,6 @@ services:
           ipv4_address: 172.30.0.4
     depends_on: 
       - vault
-  backend_graph:
-    <<: *logging-svc
-    image: backend_graph
-    restart: always
-    container_name: backend_graph
-    build:
-      context: ./backend/backend_graph
-      dockerfile: Dockerfile
-    ports:
-      - 5001:80
-    networks:
-        Dev_Net:
-          ipv4_address: 172.30.0.6
   vault:
     image: vault
     container_name: vault

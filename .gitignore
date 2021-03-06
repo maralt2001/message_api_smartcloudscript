@@ -3,14 +3,11 @@ frontend/node_modules
 startdev.sh
 backend/backend_api/bin
 backend/backend_api/obj
-backend/backend_graph/bin
-backend/backend_graph/obj
 frontend-page
 backend/vault/file
 backend/vault/logs
 backend/vault/data/key.txt
 backend/backend_api/appsettings.Production.json
-backend/backend_graph/appsettings.Production.json
 solution-commands.txt
 
 
