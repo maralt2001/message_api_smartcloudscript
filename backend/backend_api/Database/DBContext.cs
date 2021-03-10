@@ -10,14 +10,18 @@ using System.Runtime.InteropServices;
 using MongoDB.Bson.IO;
 using backend_api.Vault;
 using backend_api.Vault.Models;
+using KeyVault;
 
 namespace backend_api.Database
 {
     public abstract class DBContext : IDBContext
     {
         public MongoClient MongoClient { get; set; }
+        public MongoClientSettings MongoClientSettings { get; set; }
+        public MongoCredential MongoCredential { get; set; }
         public IMongoDatabase Database { get; set; }
-
+     
+        
 
         public async Task<bool> InsertRecordAsync<T>(string collectionName, T record)
         {
@@ -186,53 +190,31 @@ namespace backend_api.Database
 
     }
 
-    public class MongoWithCredential : DBContext
+    public class MongoDBClient : DBContext
     {
-        public MongoWithCredential(string databaseName, string databaseUrl, string user, string password)
+        public MongoDBClient(string databaseName, string databaseUrl, string user, string password)
         {
-
-            MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
-            MongoClientSettings settings = new MongoClientSettings
+            this.MongoCredential = MongoCredential.CreateCredential(databaseName, user, password);
+            this.MongoClientSettings = new MongoClientSettings
             {
-                Credential = credential,
+                Credential = this.MongoCredential,
                 Server = new MongoServerAddress(databaseUrl)
             };
-            MongoClient = new MongoClient(settings);
-            Database = MongoClient.GetDatabase(databaseName);
-
-
-        }
-
-    }
-
-   public class MongoWithCredentialVault : DBContext
-    {
-        
-        public MongoWithCredentialVault(string databaseName, string databaseUrl, string user, string password)
-        {
-
-
-            MongoCredential credential = MongoCredential.CreateCredential(databaseName, user, password);
-            MongoClientSettings settings = new MongoClientSettings
-            {
-                Credential = credential,
-                Server = new MongoServerAddress(databaseUrl)
-            };
-            MongoClient = new MongoClient(settings);
+            MongoClient = new MongoClient(this.MongoClientSettings);
             Database = MongoClient.GetDatabase(databaseName);
         }
-        
-    }
-    
 
-    public class MongoLocalDB : DBContext
-    {
-        public MongoLocalDB(string databaseName)
+        public MongoDBClient(string databaseName)
         {
-           
             MongoUrl url = new MongoUrl("mongodb://localhost:27017");
             MongoClient = new MongoClient(url);
             Database = MongoClient.GetDatabase(databaseName);
         }
+
+        
+
+        
+
+       
     }
 }

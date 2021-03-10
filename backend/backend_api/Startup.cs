@@ -6,12 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using backend_api.Controllers;
-using static backend_api.Extensions.MongoServiceExtension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using backend_api.Model;
 using backend_api.Extensions;
-using backend_api.Vault;
-using Microsoft.IdentityModel.Tokens;
 using backend_api.Database;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Prometheus;
@@ -39,7 +36,8 @@ namespace backend_api
             services.AddControllers();
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             services.AddMetrics();
-            services.AddMongoClient(Configuration, CurrentEnvironment);
+            services.AddVaultAdminClient(Configuration, CurrentEnvironment);
+            services.AddSingleton<IDBContextService>(new DBContextService(Configuration));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
             
                     options.TokenValidationParameters = new BackendAdmin().GetTokenValidationParameterAsync(
@@ -53,7 +51,7 @@ namespace backend_api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider)
         {
             
             switch (CurrentEnvironment.IsDevelopment())
@@ -62,35 +60,21 @@ namespace backend_api
 
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"The Application is running in Development mode");
-                    AdminController.isProduction = false;
-                    VaultAccess.BaseUrl = Configuration.GetValue<string>("VaultSettings:DevBaseUrl");
-                    VaultAccess.PathSealState = Configuration.GetValue<string>("VaultSettings:PathSealState");
+                    AdminController.hostEnvironment = "Development";
+                    DevController.hostEnvironment = "Development";
+                    AirportController.hostEnvironment = "Development";
+                    AuthController.hostEnvironment = "Development";
                     
-                    VaultAccess.AdminToken = Configuration.GetValue<string>("VaultTokens:DevToken");
-                    VaultAccess.HealthCheckTimer = Configuration.GetValue<int>("VaultSettings:HealthCheckTimer");
-                    VaultAccess.DBPolicy = Configuration.GetValue<string>("VaultSettings:Backend_DB_Policy");
-                    
-                    VaultJobScheduler.Start();
-
-                   
-
                     break;
 
                 case false:
 
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"The Application is running in Production mode");
-                    AdminController.isProduction = true;
-                    VaultAccess.BaseUrl = Configuration.GetValue<string>("VaultSettings:ProdBaseUrl");
-                    VaultAccess.PathSealState = Configuration.GetValue<string>("VaultSettings:PathSealState");
-                    
-                    VaultAccess.AdminToken = Configuration.GetValue<string>("VaultTokens:ProdToken");
-                    VaultAccess.HealthCheckTimer = Configuration.GetValue<int>("VaultSettings:HealthCheckTimer");
-                    VaultAccess.DBPolicy = Configuration.GetValue<string>("VaultSettings:Backend_DB_Policy");
-
-                    VaultJobScheduler.Start();
-
-                    
+                    AdminController.hostEnvironment = "Production";
+                    DevController.hostEnvironment = "Production";
+                    AirportController.hostEnvironment = "Production";
+                    AuthController.hostEnvironment = "Production";
 
                     break;
             }

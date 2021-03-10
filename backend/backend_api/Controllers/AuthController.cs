@@ -8,15 +8,12 @@ using App.Metrics.Formatters.Prometheus;
 using backend_api.Database;
 using backend_api.MetricsDefinition;
 using backend_api.Model;
+using KeyVault;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using MongoDB.Driver;
-using Newtonsoft.Json;
-using Prometheus;
+
 
 
 namespace backend_api.Controllers
@@ -25,16 +22,21 @@ namespace backend_api.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IDBContext _db;
+        
         public Stopwatch _stopwatch = new Stopwatch();
         private readonly IConfiguration _configuration;
+        private readonly IVaultProvider _vaultprovider;
+        private readonly IDBContextService _dbContextService;
+        public static string hostEnvironment;
 
-        public AuthController(IDBContext db, IConfiguration configuration)
+        public AuthController(IConfiguration configuration, IVaultProvider vaultProvider, IDBContextService dbContextService)
         {
-            _db = db;
+            
             _configuration = configuration;
-            
-            
+            _vaultprovider = vaultProvider;
+            _dbContextService = dbContextService;
+
+
         }
 
         [HttpPost]
@@ -43,6 +45,7 @@ namespace backend_api.Controllers
         public async Task<IActionResult> LoginBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
             _stopwatch.Start();
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
 
             BackendAdmin admin = await _db.LoadRecordAsync<BackendAdmin>("BackendAdmins", "email", backendAdmin.Email);
 
@@ -92,6 +95,7 @@ namespace backend_api.Controllers
 
         public async Task<IActionResult> RegisterBackendAdmin([FromBody] BackendAdmin backendAdmin)
         {
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
             var check = await _db.LoadRecordAsync<BackendAdmin>("BackendAdmins", "email", backendAdmin.Email);
             if(check == null)
             {

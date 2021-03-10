@@ -7,32 +7,25 @@ using System.Collections.Generic;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using static backend_api.Database.DBContext;
 using backend_api.MetricsDefinition;
-
-
+using KeyVault;
 
 namespace backend_api.Controllers
 {
     [ApiController]
     public class AdminController: ControllerBase
     {
-        private readonly IDBContext _db;
-        public static bool isProduction = false;
-        public static MongoWithCredentialVault mongoWithCredentialVault { get; set; }
+        
+        private readonly IVaultProvider _vaultprovider;
+        private readonly IDBContextService _dbContextService;
+        public static string hostEnvironment;
 
-        public AdminController(IDBContext db)
+
+        public AdminController(IVaultProvider vaultProvider, IDBContextService dbContextService)
         {
-            if(mongoWithCredentialVault != null && isProduction)
-            {
-                _db = mongoWithCredentialVault;
-                
-            }
-            else
-            {
-                _db = db;
-            }
-            
+            _vaultprovider = vaultProvider;
+            _dbContextService = dbContextService;
+
         }
 
         [HttpGet]
@@ -40,8 +33,8 @@ namespace backend_api.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDBStatus()
         {
-           
-           var result = await _db.IsConnectionUp();
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
+            var result = await _db.IsConnectionUp();
             if(result)
             {
                 MetricsRegistry.BackendDBConnectionUp.Inc();
@@ -62,6 +55,7 @@ namespace backend_api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetBackendadmins()
         {
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
             var result = await _db.LoadRecordsAsync<BackendAdmin>("BackendAdmins");
             if(result.Count > 0)
             {
@@ -85,6 +79,7 @@ namespace backend_api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetBackendadminsByEmailCount([FromQuery(Name ="email")] string fieldValue)
         {
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
             try
             {
                 var result = await _db.CountDocumentsAsync<BackendAdmin>("BackendAdmins", "email", fieldValue);
@@ -106,14 +101,15 @@ namespace backend_api.Controllers
         {
             List<Airport> airports = new List<Airport>();
             var path = string.Empty;
-            
-            switch (isProduction)
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
+
+            switch (hostEnvironment)
             {
-                case true:
+                case "Production":
                     path= "/data/staticfiles/"+ filename;
                     break;
                 //need in development and single container
-                case false:
+                case "Development":
                     path= Path.GetFullPath(@".\Data\Static\"+ filename);
                     break;
             }
@@ -166,6 +162,7 @@ namespace backend_api.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> CreateAirportIndex([FromQuery(Name ="key")]string key)
         {
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
             var result = await _db.CreateIndex<Airport>("airports", key);
             return Ok(new {state = result});
         }
@@ -176,6 +173,7 @@ namespace backend_api.Controllers
 
         public async Task<IActionResult> DropAirportIndex([FromQuery(Name = "index")] string indexname)
         {
+            var _db = _dbContextService.GetDBContext(hostEnvironment, _vaultprovider);
             var result = await _db.DropIndex<Airport>("airports", indexname);
             return Ok(new { state = result });
         }
